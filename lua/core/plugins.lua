@@ -43,11 +43,20 @@ return require("lazy").setup({
           vim.keymap.set('n', '<C-k>', api.node.show_info_popup, opts('Info | Thông tin node'))
           vim.keymap.set('n', '<C-r>', api.fs.rename_sub, opts('Rename: Omit Filename | Đổi tên (bỏ phần tên file)'))
           vim.keymap.set('n', '<C-t>', api.node.open.tab, opts('Open: New Tab | Mở trong tab mới'))
+          -- Thêm keymap thay thế để tránh xung đột
+          vim.keymap.set('n', '<leader>ot', api.node.open.tab, opts('Open: New Tab | Mở trong tab mới (leader+ot)'))
           vim.keymap.set('n', '<C-v>', api.node.open.vertical, opts('Open: Vertical Split | Mở ở split dọc'))
           vim.keymap.set('n', '<C-x>', api.node.open.horizontal, opts('Open: Horizontal Split | Mở ở split ngang'))
           vim.keymap.set('n', '<BS>', api.node.navigate.parent_close, opts('Close Directory | Đóng thư mục'))
           vim.keymap.set('n', '<CR>', api.node.open.edit, opts('Open | Mở'))
-          vim.keymap.set('n', '<Tab>', api.node.open.preview, opts('Open: No Pick | Mở không chọn cửa sổ'))
+          -- Sử dụng keymap khác để tránh xung đột với CMP và tab management
+          vim.keymap.set('n', '<S-Tab>', api.node.open.preview, opts('Open: No Pick | Mở không chọn cửa sổ (Shift+Tab)'))
+          vim.keymap.set('n', '<leader>p', api.node.open.preview, opts('Open: No Pick | Mở không chọn cửa sổ (leader+p)'))
+          -- Thêm keymap cho tab management trong NvimTree
+          vim.keymap.set('n', '<leader>tn', ':tabnew<CR>', opts('New Tab | Tạo tab mới'))
+          vim.keymap.set('n', '<leader>tc', ':tabclose<CR>', opts('Close Tab | Đóng tab hiện tại'))
+          vim.keymap.set('n', '<leader>t[', ':tabprevious<CR>', opts('Previous Tab | Tab trước'))
+          vim.keymap.set('n', '<leader>t]', ':tabnext<CR>', opts('Next Tab | Tab tiếp theo'))
           vim.keymap.set('n', '>', api.node.navigate.sibling.next, opts('Next Sibling | Anh em kế tiếp'))
           vim.keymap.set('n', '<', api.node.navigate.sibling.prev, opts('Previous Sibling | Anh em trước đó'))
           vim.keymap.set('n', '.', api.node.run.cmd, opts('Run Command | Chạy lệnh'))
@@ -563,6 +572,20 @@ return require("lazy").setup({
           lualine_y = { "progress" },
           lualine_z = { "location" },
         },
+        -- Tích hợp breadcrumbs vào statusline
+        -- tabline = {
+        --   lualine_a = {
+        --     {
+        --       "tabs",
+        --       mode = 2,
+        --       max_length = vim.o.columns,
+        --       tabs_color = {
+        --         active = "lualine_a_normal",
+        --         inactive = "lualine_b_normal",
+        --       },
+        --     },
+        --   },
+        -- },
       })
     end,
   },
@@ -1063,6 +1086,84 @@ return require("lazy").setup({
     end,
   },
 
+  -- Breadcrumb navigation
+  {
+    "LunarVim/breadcrumbs.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("breadcrumbs").setup({
+        -- Tự động hiển thị breadcrumbs cho tất cả file types
+        filetype = { "*" },
+        -- Hiển thị breadcrumbs trong statusline
+        statusline = true,
+        -- Hiển thị breadcrumbs trong winbar
+        winbar = true,
+        -- Tự động cập nhật khi thay đổi buffer
+        update_events = { "BufRead", "BufNewFile", "BufWritePost" },
+        -- Cấu hình hiển thị
+        display = {
+          -- Hiển thị icons
+          icons = true,
+          -- Hiển thị file extension
+          file_extension = true,
+          -- Hiển thị file size
+          file_size = false,
+          -- Hiển thị file type
+          file_type = true,
+          -- Hiển thị git status
+          git_status = true,
+          -- Hiển thị lsp symbols
+          lsp_symbols = true,
+        },
+        -- Cấu hình icons
+        icons = {
+          -- Icon cho thư mục
+          directory = "📁",
+          -- Icon cho file
+          file = "📄",
+          -- Icon cho symlink
+          symlink = "🔗",
+          -- Icon cho git
+          git = "🔀",
+          -- Icon cho lsp
+          lsp = "💡",
+        },
+        -- Cấu hình colors
+        colors = {
+          -- Màu cho breadcrumb hiện tại
+          current = "Special",
+          -- Màu cho breadcrumb thường
+          normal = "Comment",
+          -- Màu cho breadcrumb hover
+          hover = "String",
+        },
+        -- Cấu hình keymaps
+        keymaps = {
+          -- Keymap để toggle breadcrumbs
+          toggle = "<leader>bb",
+          -- Keymap để refresh breadcrumbs
+          refresh = "<leader>br",
+        },
+        -- Tự động ẩn breadcrumbs cho file types cụ thể
+        exclude_filetypes = {
+          "help",
+          "startify",
+          "dashboard",
+          "lazy",
+          "neogitstatus",
+          "NvimTree",
+          "Trouble",
+          "alpha",
+          "lir",
+          "Outline",
+          "spectre_panel",
+          "toggleterm",
+          "qf",
+        },
+      })
+    end,
+  },
+
   -- Better highlight
   {
     "RRethy/vim-illuminate",
@@ -1071,6 +1172,66 @@ return require("lazy").setup({
         delay = 200,
       })
     end,
+  },
+
+  -- Winbar với breadcrumbs
+  {
+    "utilyre/barbecue.nvim",
+    name = "barbecue",
+    version = "*",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons",
+    },
+    opts = {
+      -- Tự động hiển thị winbar
+      auto = true,
+      -- Cấu hình winbar
+      theme = "catppuccin",
+      -- Hiển thị context
+      context_follow_icon_color = true,
+      -- Hiển thị file path
+      show_file_path = true,
+      -- Hiển thị file name
+      show_file_name = true,
+      -- Hiển thị file extension
+      show_file_extension = true,
+      -- Hiển thị file size
+      show_file_size = false,
+      -- Hiển thị git status
+      show_git_status = true,
+      -- Hiển thị lsp symbols
+      show_lsp_symbols = true,
+      -- Cấu hình icons
+      kinds = {
+        File = "📄",
+        Module = "📦",
+        Namespace = "📁",
+        Package = "📦",
+        Class = "🏗️",
+        Method = "⚙️",
+        Property = "🔧",
+        Field = "🏷️",
+        Constructor = "🔨",
+        Enum = "📋",
+        Interface = "🔌",
+        Function = "🔧",
+        Variable = "📝",
+        Constant = "🔒",
+        String = "📝",
+        Number = "🔢",
+        Boolean = "✅",
+        Array = "📊",
+        Object = "📦",
+        Key = "🔑",
+        Null = "❌",
+        EnumMember = "📋",
+        Struct = "🏗️",
+        Event = "🎯",
+        Operator = "⚡",
+        TypeParameter = "🔧",
+      },
+    },
   },
 
   -- Better diagnostics display

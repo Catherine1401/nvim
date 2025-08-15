@@ -13,8 +13,8 @@ map("n", "<C-k>", "<C-w>k", opts) -- Di chuyển sang cửa sổ trên
 map("n", "<C-l>", "<C-w>l", opts) -- Di chuyển sang cửa sổ phải
 
 -- Better buffer navigation
-map("n", "<leader><Tab>", ":BufferLineCycleNext<CR>", opts) -- Sang buffer tiếp theo (leader+Tab)
-map("n", "<leader><S-Tab>", ":BufferLineCyclePrev<CR>", opts) -- Về buffer trước đó (leader+Shift+Tab)
+map("n", "<leader><Tab>", ":BufferLineCycleNext<CR>", opts) -- Sang buffer tiếp theo (leader+bn)
+map("n", "<leader><S-Tab>", ":BufferLineCyclePrev<CR>", opts) -- Về buffer trước đó (leader+bp)
 map("n", "<leader><BTab>", ":BufferLineCyclePrev<CR>", opts) -- Fallback cho terminal gửi BackTab
 map("n", "<leader>]", ":BufferLineCycleNext<CR>", opts) -- Phím thay thế nếu Shift+Tab không nhận
 map("n", "<leader>[", ":BufferLineCyclePrev<CR>", opts) -- Phím thay thế nếu Shift+Tab không nhận
@@ -98,8 +98,14 @@ map("t", "<Esc>", "<C-\\><C-n>", opts) -- Thoát insert trong terminal
  map("n", "<leader>fH", ":FlutterHotRestart<CR>", opts) -- Hot restart
  map("n", "<leader>fq", ":FlutterQuit<CR>", opts) -- Dừng Flutter
  map("n", "<leader>fd", ":FlutterDevices<CR>", opts) -- Danh sách thiết bị
+
+ -- Breadcrumbs navigation
+ map("n", "<leader>bb", "<cmd>BreadcrumbsToggle<cr>", opts) -- Toggle breadcrumbs
+ map("n", "<leader>br", "<cmd>BreadcrumbsRefresh<cr>", opts) -- Refresh breadcrumbs
  map("n", "<leader>fo", ":FlutterOutline<CR>", opts) -- Cấu trúc Flutter
  map("n", "<leader>fl", ":FlutterLspRestart<CR>", opts) -- Restart LSP Flutter
+
+
 
 -- DAP (debug) cơ bản
 map("n", "<leader>db", ":lua require('dap').toggle_breakpoint()<CR>", opts) -- Toggle breakpoint

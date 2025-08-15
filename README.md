@@ -66,6 +66,7 @@ nvim
 - Syntax highlighting (Treesitter)
 - Status line (Lualine)
 - Buffer management (Bufferline)
+- **Breadcrumbs navigation** - Hiển thị đường dẫn file và context
 
 ## **Lợi ích:**
 
@@ -88,6 +89,32 @@ nvim
 :MasonNullLs    -- Formatters và linters
 :Lazy           -- Plugin manager
 :checkhealth    -- System health
+```
+
+### **Keymaps chính:**
+```vim
+-- Buffer Management:
+<leader>bn      -- Sang buffer tiếp theo
+<leader>bp      -- Về buffer trước đó
+<leader>bd      -- Chọn và đóng buffer
+<leader>bc      -- Đóng buffer hiện tại
+<leader>1-9     -- Chuyển đến buffer 1-9
+
+-- Tab Management:
+<leader>tn      -- Tạo tab mới
+<leader>tc      -- Đóng tab hiện tại
+<leader>t[      -- Tab trước
+<leader>t]      -- Tab tiếp theo
+
+-- Breadcrumbs:
+<leader>bb      -- Toggle breadcrumbs
+<leader>br      -- Refresh breadcrumbs
+
+-- File Explorer:
+<leader>e       -- Toggle NvimTree
+<leader>ot      -- Mở file trong tab mới (NvimTree)
+<leader>ff      -- Tìm file (Telescope)
+<leader>fg      -- Tìm nội dung (Telescope)
 ```
 
 ## **Lưu ý quan trọng:**
