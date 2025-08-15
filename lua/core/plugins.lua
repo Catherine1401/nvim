@@ -216,18 +216,15 @@ return require("lazy").setup({
 
                                      -- LSP servers (front-end + PHP + Dart/Flutter + Node.js Backend)
           local servers = {
-            "ts_ls",    -- TypeScript/JavaScript
+            "ts_ls",    -- TypeScript/JavaScript (thay vì ts_ls)
             "html",     -- HTML
             "cssls",    -- CSS
             "jsonls",   -- JSON
-            "eslint",   -- ESLint
             "tailwindcss", -- Tailwind CSS
             "vue_ls",    -- Vue (Volar)
             "emmet_ls", -- Emmet
             "intelephense", -- PHP language server
             "denols",   -- Deno/Node.js language server
-            "eslint_ls", -- ESLint language server
-            "jsonls",   -- JSON language server
             "yamlls",   -- YAML language server
             "dockerls", -- Docker language server
             "docker_compose_language_service", -- Docker Compose
@@ -351,21 +348,7 @@ return require("lazy").setup({
                 }
               end
 
-              -- Add specific settings for ESLint LSP
-              if server_name == "eslint_ls" then
-                config.settings = {
-                  eslint = {
-                    enable = true,
-                    format = { enable = true },
-                    lintTask = {
-                      enable = true,
-                      options = {
-                        extensions = { ".js", ".jsx", ".ts", ".tsx", ".vue" },
-                      },
-                    },
-                  },
-                }
-              end
+
 
               -- Add specific settings for Docker
               if server_name == "dockerls" then

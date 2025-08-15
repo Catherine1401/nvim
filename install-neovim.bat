@@ -8,8 +8,11 @@ echo ========================================
 echo    NEOVIM AUTO-INSTALLATION SCRIPT
 echo ========================================
 echo.
-echo This script will install Neovim and all dependencies
+echo This script will install Neovim and essential system dependencies
 echo for Windows 11 through Scoop package manager
+echo.
+echo NOTE: All Neovim plugins, LSP servers, and development tools
+echo will be automatically installed by Lazy loader and Mason!
 echo.
 
 REM Check if PowerShell is available
@@ -27,4 +30,9 @@ powershell -ExecutionPolicy Bypass -File "%~dp0install-neovim.ps1"
 
 echo.
 echo Script completed!
+echo.
+echo Next steps:
+echo 1. Open Neovim: nvim
+echo 2. Wait for Lazy loader to install plugins automatically
+echo 3. Wait for Mason to install LSP servers and tools automatically
 pause

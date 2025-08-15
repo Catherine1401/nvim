@@ -1,9 +1,9 @@
 # ========================================
 # Neovim Auto-Installation Script for Windows 11
 # ========================================
-# Automatic installation script for Neovim and all dependencies
+# Automatic installation script for Neovim and essential system dependencies only
 # Uses Scoop package manager exclusively
-# Based on configuration from: https://github.com/Catherine1401/nvim.git
+# Lazy loader will handle all Neovim plugins and tools
 
 param(
     [switch]$SkipConfirmation,
@@ -74,8 +74,6 @@ function Test-WindowsVersion {
     Write-Success "Windows version: $($os.Caption) $($os.Version)"
 }
 
-
-
 # Install Scoop if not present
 function Install-Scoop {
     if (Get-Command scoop -ErrorAction SilentlyContinue) {
@@ -113,7 +111,7 @@ function Install-Neovim {
     }
 }
 
-# Install Node.js via Scoop
+# Install Node.js via Scoop (required for some LSP servers)
 function Install-NodeJS {
     if (Get-Command node -ErrorAction SilentlyContinue) {
         Write-Success "Node.js is already installed"
@@ -131,23 +129,22 @@ function Install-NodeJS {
     }
 }
 
-# Install essential tools via Scoop
-function Install-EssentialTools {
-    Write-Info "Installing essential tools..."
+# Install essential system tools only (not managed by Lazy loader)
+function Install-EssentialSystemTools {
+    Write-Info "Installing essential system tools..."
     
-    $tools = @(
-        "git",
-        "ripgrep",
-        "fzf",
-        "jq",
-        "python",
-        "php",
-        "dart",
-        "deno",
-        "msys2"
+    $systemTools = @(
+        "git",           # Required for Lazy loader to clone plugins
+        "ripgrep",       # Required for Telescope fuzzy finder
+        "fzf",          # Required for Telescope fuzzy finder
+        "python",       # Required for some LSP servers and tools
+        "php",          # Required for PHP LSP server
+        "dart",         # Required for Dart/Flutter LSP server
+        "deno",         # Required for Deno LSP server
+        "live-server"   # Required for live preview of web projects
     )
     
-    foreach ($tool in $tools) {
+    foreach ($tool in $systemTools) {
         try {
             if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) {
                 Write-Info "Installing $tool..."
@@ -159,68 +156,6 @@ function Install-EssentialTools {
         }
         catch {
             Write-Warning "Could not install $tool - $($_.Exception.Message)"
-        }
-    }
-}
-
-# Install development tools via Scoop
-function Install-DevTools {
-    Write-Info "Installing development tools..."
-    
-    $devTools = @(
-        "stylua",
-        "js-beautify",
-        "html-beautify", 
-        "css-beautify",
-        "prettier",
-        "eslint_d",
-        "php-cs-fixer",
-        "phpcs",
-        "phpcbf",
-        "dart_format",
-        "hadolint",
-        "sqlformat",
-        "sqlfluff",
-        "yamllint"
-    )
-    
-    foreach ($tool in $devTools) {
-        try {
-            if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) {
-                Write-Info "Installing $tool..."
-                scoop install $tool
-                Write-Success "$tool has been installed"
-            } else {
-                Write-Success "$tool is already available"
-            }
-        }
-        catch {
-            Write-Warning "Could not install $tool - $($_.Exception.Message)"
-        }
-    }
-}
-
-# Install global npm packages
-function Install-GlobalNPMPackages {
-    Write-Info "Installing global npm packages..."
-    
-    $npmPackages = @(
-        "live-server",
-        "typescript",
-        "ts-node",
-        "@types/node",
-        "eslint",
-        "prettier"
-    )
-    
-    foreach ($package in $npmPackages) {
-        try {
-            Write-Info "Installing $package..."
-            npm install -g $package
-            Write-Success "$package has been installed"
-        }
-        catch {
-            Write-Warning "Could not install $package - $($_.Exception.Message)"
         }
     }
 }
@@ -302,14 +237,8 @@ function Start-Installation {
         Install-NodeJS
     }
     
-    # Install essential tools
-    Install-EssentialTools
-    
-    # Install development tools
-    Install-DevTools
-    
-    # Install global npm packages
-    Install-GlobalNPMPackages
+    # Install essential system tools only
+    Install-EssentialSystemTools
     
     # Clone Neovim configuration
     Clone-NeovimConfig
@@ -321,11 +250,14 @@ function Start-Installation {
     Write-Success "Neovim has been installed successfully via Scoop!"
     Write-Info "To get started:"
     Write-Info "1. Open Neovim: nvim"
-    Write-Info "2. Wait for plugins to auto-install"
-    Write-Info "3. Use :checkhealth to check system health"
-    Write-Info "4. Use :Lazy sync to update plugins"
+    Write-Info "2. Wait for Lazy loader to install all plugins automatically"
+    Write-Info "3. Wait for Mason to install LSP servers and tools automatically"
+    Write-Info "4. Use :checkhealth to check system health"
+    Write-Info "5. Use :Lazy sync to update plugins"
     Write-Info ""
-    Write-Info "All packages were installed via Scoop package manager"
+    Write-Info "IMPORTANT: All Neovim plugins, LSP servers, and development tools"
+    Write-Info "will be automatically installed by Lazy loader and Mason!"
+    Write-Info "No need to install them manually."
 }
 
 # Script execution
@@ -335,8 +267,11 @@ try {
         Write-Info "This script will install (via Scoop only):"
         Write-Info "- Neovim"
         Write-Info "- Node.js LTS"
-        Write-Info "- Development tools (formatters, linters)"
+        Write-Info "- Essential system tools (git, ripgrep, fzf, python, php, dart, deno, live-server)"
         Write-Info "- Neovim configuration from GitHub"
+        Write-Info ""
+        Write-Info "NOTE: All Neovim plugins, LSP servers, and development tools"
+        Write-Info "will be automatically installed by Lazy loader and Mason!"
         Write-Info ""
         Write-Info "Do you want to continue? (Y/n)"
         $response = Read-Host

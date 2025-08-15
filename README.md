@@ -1,268 +1,106 @@
-# Neovim Configuration for Front-End Development
+# Neovim Configuration for Windows 11
 
-Cấu hình Neovim tối ưu cho front-end development với nhiều plugins hữu ích và cấu hình tự động.
+## **Cài đặt nhanh:**
 
-## 🚀 Tính năng chính
-
-### 📁 File Explorer & Navigation
-- **NvimTree**: File explorer với icons đẹp
-- **Telescope**: Fuzzy finder mạnh mẽ
-- **Project.nvim**: Quản lý project tự động
-
-### 🛠️ LSP & Completion
-- **Mason**: Quản lý LSP servers tự động
-- **nvim-cmp**: Completion engine
-- **LuaSnip**: Snippets engine
-- **Friendly-snippets**: Snippets cho nhiều ngôn ngữ
-
-### 🎨 UI & Experience
-- **Catppuccin**: Theme đẹp và modern
-- **Lualine**: Status line
-- **Bufferline**: Tab bar
-- **Indent-blankline**: Indent guides
-- **Noice**: UI improvements
-
-### 🔧 Development Tools
-- **Treesitter**: Syntax highlighting nâng cao
-- **Gitsigns**: Git integration
-- **Comment.nvim**: Comment/uncomment
-- **Autopairs**: Auto pairs brackets
-- **Surround**: Surround text objects
-- **ToggleTerm**: Terminal integration
-
-### 📝 Formatting & Linting
-- **Conform.nvim**: Auto formatting
-- **nvim-lint**: Linting
-- **Prettier**: Code formatting
-- **ESLint**: JavaScript/TypeScript linting
-
-### 🎯 Front-End Specific
-- **TypeScript/JavaScript**: Full LSP support
-- **Vue**: Vue.js support
-- **Tailwind CSS**: Tailwind CSS IntelliSense
-- **Emmet**: HTML/CSS abbreviations
-- **HTML/CSS**: Enhanced support
-
-## 📦 Cài đặt
-
-### Yêu cầu hệ thống
-- Neovim 0.8.0+
-- Git
-- Node.js (cho LSP servers)
-- Ripgrep (cho Telescope)
-
-### Cài đặt Neovim
-```bash
-# Windows (Chocolatey)
-choco install neovim
-
-# macOS (Homebrew)
-brew install neovim
-
-# Linux
-sudo apt install neovim  # Ubuntu/Debian
-sudo dnf install neovim  # Fedora
+### **1. Chạy script cài đặt:**
+```cmd
+install-neovim.bat
 ```
 
-### Cài đặt cấu hình
-1. Clone hoặc copy cấu hình vào thư mục Neovim:
-```bash
-# Windows
-%LOCALAPPDATA%\nvim\
+### **2. Script sẽ cài đặt:**
+- **Neovim** - Editor chính
+- **Node.js LTS** - Runtime cho JavaScript/TypeScript
+- **Git** - Để clone plugins
+- **Ripgrep & FZF** - Fuzzy finder cho Telescope
+- **Python** - Runtime cho một số LSP servers
+- **PHP** - Runtime cho PHP LSP server
+- **Dart** - Runtime cho Dart/Flutter LSP server
+- **Deno** - Runtime cho Deno LSP server
+- **Live Server** - Live preview cho web projects
 
-# macOS/Linux
-~/.config/nvim/
-```
-
-2. Khởi động Neovim và chờ plugins tự động cài đặt:
+### **3. Sau khi cài đặt:**
 ```bash
 nvim
 ```
 
-## ⌨️ Keymaps
+## **Hệ thống tự động:**
 
-### Navigation
-- `<Space>`: Leader key
-- `<C-h/j/k/l>`: Di chuyển giữa windows
-- `<S-h/l>`: Di chuyển giữa buffers (BufferLine)
-- `<leader>1-9`: Chuyển đến buffer số 1-9
-- `<leader>bp`: Chọn buffer để chuyển đến
-- `<leader>ff`: Tìm file
-- `<leader>fg`: Tìm text
-- `<leader>fb`: Danh sách buffers
+### **Lazy Loader:**
+- Tự động cài đặt tất cả Neovim plugins
+- Quản lý dependencies và updates
+- Lazy loading để tối ưu performance
 
-### LSP
-- `gd`: Go to definition
-- `gr`: Go to references
-- `K`: Hover
-- `<leader>ca`: Code actions
-- `<leader>rn`: Rename
+### **Mason:**
+- Tự động cài đặt LSP servers
+- Tự động cài đặt formatters/linters
+- Quản lý tất cả development tools
 
-### Diagnostics
-- `[d`: Previous diagnostic
-- `]d`: Next diagnostic
-- `<leader>e`: Show diagnostic in float window
-- `<leader>xx`: Toggle Trouble diagnostics
-- `<leader>xw`: Show workspace diagnostics
-- `<leader>xd`: Show document diagnostics
+### **Không cần cài đặt thủ công:**
+- ❌ ESLint, Prettier, PHP-CS-Fixer
+- ❌ SQL formatters, YAML linters
+- ❌ Code beautifiers
+- ❌ TypeScript compiler
 
-### Git
-- `<leader>gs`: Git status
-- `<leader>gc`: Git commit
-- `<leader>gp`: Git push
+## **Cấu hình bao gồm:**
 
-### Terminal
-- `<leader>tt`: Toggle terminal
-- `<C-\>`: Toggle terminal (alternative)
-
-### File Operations
-- `<leader>e`: Toggle file explorer
-- `<leader>ef`: Find current file in explorer
-- `<leader>ec`: Close file explorer
-- `<leader>er`: Refresh file explorer
-- `<leader>w`: Save file
-- `<leader>q`: Quit
-- `<leader>f`: Format code
-
-### NvimTree (File Explorer)
-**Global keymaps:**
-- `<leader>e`: Toggle NvimTree
-- `<leader>ef`: Find current file in tree
-- `<leader>ec`: Close NvimTree
-- `<leader>er`: Refresh NvimTree
-
-**Inside NvimTree:**
-- `<CR>` hoặc `o`: Open file
-- `<Tab>`: Preview file
-- `<C-v>`: Open in vertical split
-- `<C-x>`: Open in horizontal split
-- `<C-t>`: Open in new tab
-- `a`: Create new file/folder
-- `d`: Delete file/folder
-- `r`: Rename file/folder
-- `c`: Copy file/folder
-- `x`: Cut file/folder
-- `p`: Paste file/folder
-- `y`: Copy filename
-- `Y`: Copy relative path
-- `gy`: Copy absolute path
-- `-`: Go to parent directory
-- `<C-]>`: Change root to current node
-- `R`: Refresh tree
-- `q`: Close tree
-- `H`: Toggle hidden files
-- `I`: Toggle git ignore files
-- `f`: Filter files
-- `F`: Clear filter
-- `E`: Expand all
-- `W`: Collapse all
-- `g?`: Show help
-
-### Comments
-- `<leader>/`: Toggle comment
-
-### Other
-- `jj` hoặc `jk`: Escape từ insert mode
-- `<leader>nh`: Clear search highlight
-- `<leader>y`: Copy to clipboard
-- `<leader>p`: Paste from clipboard
-
-## 🔧 Cấu hình
-
-### Tự động format
-Code sẽ tự động format khi save cho các file:
-- JavaScript/TypeScript
-- Vue
-- CSS/SCSS
-- HTML
-- JSON
-- Markdown
-
-### LSP Servers
-Các LSP servers sẽ tự động cài đặt:
+### **LSP Servers:**
 - TypeScript/JavaScript (tsserver)
-- HTML (html)
-- CSS (cssls)
-- JSON (jsonls)
-- ESLint (eslint)
-- Tailwind CSS (tailwindcss)
-- Vue (vue_language_server)
-- Emmet (emmet_ls)
+- PHP (intelephense)
+- Dart/Flutter
+- HTML/CSS/JSON
+- Vue, Tailwind CSS
+- Docker, YAML
 
-### Treesitter Parsers
-Các parsers sẽ tự động cài đặt:
-- javascript, typescript, tsx, jsx
-- html, css, scss
-- json, yaml
-- vue, lua, vim
-- bash, markdown
+### **Formatters & Linters:**
+- JavaScript/HTML/CSS (Beautify)
+- PHP (php-cs-fixer, phpcs, phpcbf)
+- SQL (sqlformat, sqlfluff)
+- YAML (yamllint)
+- Docker (hadolint)
 
-## 🎨 Themes
+### **Plugins:**
+- File explorer (NvimTree)
+- Fuzzy finder (Telescope)
+- Git integration (Gitsigns)
+- Auto-completion (nvim-cmp)
+- Syntax highlighting (Treesitter)
+- Status line (Lualine)
+- Buffer management (Bufferline)
 
-Mặc định sử dụng theme **Catppuccin**. Bạn có thể thay đổi trong file `lua/core/plugins.lua`:
+## **Lợi ích:**
 
-```lua
-{
-  "catppuccin/nvim",
-  name = "catppuccin",
-  priority = 1000,
-  config = function()
-    vim.cmd.colorscheme "catppuccin"
-  end,
-}
+✅ **Cài đặt nhanh** - Chỉ cài dependencies cần thiết  
+✅ **Tự động hoàn chỉnh** - Lazy loader và Mason xử lý mọi thứ  
+✅ **Không trùng lặp** - Không cài đặt tools đã có trong Neovim  
+✅ **Dễ bảo trì** - Tất cả được quản lý tập trung  
+✅ **Performance tối ưu** - Lazy loading plugins  
+
+## **Troubleshooting:**
+
+### **Nếu gặp lỗi:**
+1. Chạy `:checkhealth` trong Neovim
+2. Chạy `:Mason` để kiểm tra LSP servers
+3. Chạy `:Lazy sync` để đồng bộ plugins
+
+### **Kiểm tra trạng thái:**
+```vim
+:Mason          -- LSP servers và tools
+:MasonNullLs    -- Formatters và linters
+:Lazy           -- Plugin manager
+:checkhealth    -- System health
 ```
 
-## 📁 Cấu trúc thư mục
+## **Lưu ý quan trọng:**
 
-```
-nvim/
-├── init.lua              # File chính
-├── lua/
-│   └── core/
-│       ├── options.lua   # Cấu hình options
-│       ├── keymaps.lua   # Keymaps
-│       ├── plugins.lua   # Plugins configuration
-│       └── lsp.lua       # LSP configuration
-└── README.md             # Hướng dẫn này
-```
+- **KHÔNG** cài đặt thủ công các development tools
+- **KHÔNG** cài đặt npm packages global
+- **ĐỂ** Lazy loader và Mason tự động xử lý
+- **CHỈ** cài đặt system dependencies cần thiết
 
-## 🚀 Tips & Tricks
+## **Hỗ trợ:**
 
-### Tối ưu hiệu suất
-- Sử dụng `:Lazy sync` để cập nhật plugins
-- Sử dụng `:TSUpdate` để cập nhật Treesitter parsers
-- Sử dụng `:Mason` để quản lý LSP servers
-- Tắt `lazyredraw` để tránh xung đột với Noice
-- Sử dụng `:Lazy clean` để dọn dẹp plugins không sử dụng
-
-### Debug
-- `:checkhealth`: Kiểm tra sức khỏe Neovim
-- `:Lazy log`: Xem log của lazy.nvim
-- `:LspInfo`: Thông tin LSP
-
-### Customization
-- Thêm plugins: Chỉnh sửa `lua/core/plugins.lua`
-- Thay đổi keymaps: Chỉnh sửa `lua/core/keymaps.lua`
-- Tùy chỉnh options: Chỉnh sửa `lua/core/options.lua`
-
-## 🤝 Contributing
-
-Nếu bạn muốn đóng góp, hãy:
-1. Fork repository
-2. Tạo feature branch
-3. Commit changes
-4. Push to branch
-5. Tạo Pull Request
-
-## 📄 License
-
-MIT License - xem file LICENSE để biết thêm chi tiết.
-
-## 🙏 Credits
-
-Cấu hình này được xây dựng dựa trên:
-- [LazyVim](https://github.com/LazyVim/LazyVim)
-- [NvChad](https://github.com/NvChad/NvChad)
-- [AstroNvim](https://github.com/AstroNvim/AstroNvim)
-
-Cảm ơn các dự án tuyệt vời này!
+Nếu gặp vấn đề, hãy kiểm tra:
+1. PowerShell Execution Policy
+2. Kết nối internet để clone plugins
+3. Quyền truy cập thư mục
+4. Node.js và Python đã được cài đặt
