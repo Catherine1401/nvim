@@ -97,85 +97,44 @@ vim.diagnostic.config({
   underline = true
 })
 
-local function toggle_visual_diagnostics()
-  -- Lấy cấu hình hiện tại
-  local current_config = vim.diagnostic.config()
+-- local function toggle_visual_diagnostics()
+--   -- Lấy cấu hình hiện tại
+--   local current_config = vim.diagnostic.config()
 
-  -- 🌟 SỬA LỖI: Kiểm tra xem virtual_text có phải là bảng (table) không 🌟
-  -- Nếu là table, kiểm tra trường enabled hoặc prefix.
-  -- Nếu là boolean, kiểm tra trực tiếp giá trị boolean đó.
-  local is_enabled = false
-  if type(current_config.virtual_text) == 'table' then
-    -- Nếu là bảng, coi như đang bật nếu không bị disable rõ ràng
-    is_enabled = current_config.virtual_text.enabled ~= false
-  elseif type(current_config.virtual_text) == 'boolean' then
-    -- Nếu là boolean, coi như đang bật nếu nó là true
-    is_enabled = current_config.virtual_text == true
-  end
+--   -- 🌟 SỬA LỖI: Kiểm tra xem virtual_text có phải là bảng (table) không 🌟
+--   -- Nếu là table, kiểm tra trường enabled hoặc prefix.
+--   -- Nếu là boolean, kiểm tra trực tiếp giá trị boolean đó.
+--   local is_enabled = false
+--   if type(current_config.virtual_text) == 'table' then
+--     -- Nếu là bảng, coi như đang bật nếu không bị disable rõ ràng
+--     is_enabled = current_config.virtual_text.enabled ~= false
+--   elseif type(current_config.virtual_text) == 'boolean' then
+--     -- Nếu là boolean, coi như đang bật nếu nó là true
+--     is_enabled = current_config.virtual_text == true
+--   end
 
 
-  if is_enabled then
-    -- TRẠNG THÁI LÀ BẬT -> TẮT VIRTUAL TEXT
-    vim.diagnostic.config({
-      virtual_text = false, -- Tắt bằng boolean
-      -- signs = false,        -- Tắt signs
-      -- underline = false,    -- Tắt underline
-    })
-  else
-    -- TRẠNG THÁI LÀ TẮT -> BẬT VIRTUAL TEXT
-    vim.diagnostic.config({
-      -- Bật với đầy đủ cấu hình table (để không bị lỗi boolean lần sau)
-      virtual_text = {
-        enabled = true,
-        prefix = '  ',
-        severity = { min = vim.diagnostic.severity.HINT },
-      },
-      -- signs = true,         -- Bật signs
-      -- underline = true,     -- Bật underline
-    })
-  end
-end
+--   if is_enabled then
+--     -- TRẠNG THÁI LÀ BẬT -> TẮT VIRTUAL TEXT
+--     vim.diagnostic.config({
+--       virtual_text = false, -- Tắt bằng boolean
+--       -- signs = false,        -- Tắt signs
+--       -- underline = false,    -- Tắt underline
+--     })
+--   else
+--     -- TRẠNG THÁI LÀ TẮT -> BẬT VIRTUAL TEXT
+--     vim.diagnostic.config({
+--       -- Bật với đầy đủ cấu hình table (để không bị lỗi boolean lần sau)
+--       virtual_text = {
+--         enabled = true,
+--         prefix = '  ',
+--         severity = { min = vim.diagnostic.severity.HINT },
+--       },
+--       -- signs = true,         -- Bật signs
+--       -- underline = true,     -- Bật underline
+--     })
+--   end
+-- end
 
-vim.keymap.set('n', '<leader>dt', toggle_visual_diagnostics, { desc = 'Toggle Virtual Text Diagnostics' })
+-- vim.keymap.set('n', '<leader>dt', toggle_visual_diagnostics, { desc = 'Toggle Virtual Text Diagnostics' })
 
-local on_attach_handler = function(client, bufnr)
-  -- Tùy chọn cho keymap (chỉ áp dụng cho buffer hiện tại)
-  local opts = { noremap = true, silent = true, buffer = bufnr }
-
-  -- 1. Thiết lập các thao tác di chuyển/tra cứu (Navigation/Lookup)
-  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)      -- Go to Definition (Đi đến định nghĩa)
-  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)     -- Go to Declaration (Đi đến khai báo)
-  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)  -- Go to Implementation (Đi đến triển khai)
-  vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts) -- Go to Type Definition (Đi đến định nghĩa kiểu)
-  vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)      -- Go to References (Tìm các tham chiếu)
-
-  -- Ghi đè phím K (Hover) để xem thông tin nhanh, và đặt lại phím mặc định của Neovim
-  vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts) -- K: Hiển thị tài liệu/thông tin nhanh (Hover)
-
-  -- 2. Thiết lập các thao tác sửa chữa/hành động (Actions)
-  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts) -- <leader>ca: Code Action (Hành động mã)
-  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)      -- <leader>rn: Rename (Đổi tên biến/hàm)
-  vim.keymap.set({ 'n', 'v' }, '<leader>ff', function()
-    vim.lsp.buf.format({ async = true })
-  end, opts)
-  -- 3. Thiết lập các thao tác chẩn đoán lỗi (Diagnostics)
-  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)         -- [d: Đi đến lỗi/cảnh báo trước
-  vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)         -- ]d: Đi đến lỗi/cảnh báo tiếp theo
-  vim.keymap.set('n', '<leader>D', vim.diagnostic.open_float, opts) -- <leader>D: Mở cửa sổ chi tiết lỗi
-
-  -- 4. Thiết lập các thao tác đặc biệt
-  vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, opts) -- <C-k> (Insert mode): Hiển thị trợ giúp hàm (Signature Help)
-
-  -- 5. Xóa/Vô hiệu hóa các cài đặt mặc định không cần thiết (Buffer-Local)
-  -- Giúp tránh xung đột và dùng các plugin khác (ví dụ: gq cho formatting)
-  vim.bo[bufnr].formatexpr = nil
-  -- vim.bo[bufnr].omnifunc = nil -- Có thể bỏ dòng này nếu cậu muốn dùng cmp.
-  -- vim.lsp.document_color.enable(false, bufnr) -- Bỏ comment nếu cậu muốn tắt tô sáng màu
-end
-
--- Sau đó, cậu truyền hàm này vào cấu hình lspconfig của mình
--- Ví dụ cho Lua Language Server (lua_ls):
-require('lspconfig').lua_ls.setup {
-  on_attach = on_attach_handler,
-  -- ... các tùy chọn khác
-}

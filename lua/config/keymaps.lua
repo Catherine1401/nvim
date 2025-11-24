@@ -8,10 +8,10 @@ local map = vim.keymap.set
 
 -- Thoát nhanh (Quit)
 map("n", "<leader>q", "<cmd>q<cr>", { desc = "Thoát Neovim (Quit all)" })
-map("n", "<leader>w", "<cmd>w<cr>", { desc = "Thoát Neovim (Quit all)" })
+map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save" })
 map('n', '<C-a>', 'ggVG')
-map('n', '<C-u', '<C-u>zz')
-map('n', '<C-d', '<C-d>zz')
+-- map('n', '<C-u', '<C-u>zz')
+-- map('n', '<C-d', '<C-d>zz')
 
 -- Tắt highlight tìm kiếm khi bấm Esc (cho đỡ rối mắt)
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Tắt highlight tìm kiếm" })
@@ -62,5 +62,5 @@ map("x", "p", [["_dP]], { desc = "Paste không mất clipboard" })
 map("n", "J", "mzJ`z", { desc = "Nối dòng (Giữ vị trí con trỏ)" })
 
 -- tree
-map('n', '<leader>e', ':Neotree<CR>')
-map('n', '<leader>o', ':Neotree action=close<CR>')
+map('n', '<leader>e', ':Neotree<CR>', {silent = true})
+map('n', '<leader>o', ':Neotree action=close<CR>', {silent = true})

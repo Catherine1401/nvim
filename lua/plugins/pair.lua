@@ -4,14 +4,14 @@ return {
     "windwp/nvim-autopairs",
     event = "InsertEnter", -- Tối ưu hiệu năng: Chỉ chạy khi bắt đầu gõ
     opts = {
-      check_ts = true, -- Kích hoạt Treesitter để check ngữ cảnh (tránh đóng ngoặc trong string/comment)
+      check_ts = true,     -- Kích hoạt Treesitter để check ngữ cảnh (tránh đóng ngoặc trong string/comment)
       ts_config = {
         lua = { "string", "source" },
         javascript = { "string", "template_string" },
         java = false,
       },
       disable_filetype = { "TelescopePrompt", "spectre_panel" },
-      
+
       -- Tính năng Fast Wrap (Bọc nhanh bằng Alt + e)
       fast_wrap = {
         map = "<M-e>",
@@ -31,18 +31,18 @@ return {
       autopairs.setup(opts)
 
       -- Tích hợp an toàn với nvim-cmp (nếu có)
-      local cmp_status_ok, cmp = pcall(require, "cmp")
-      if cmp_status_ok then
-        local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-        cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-      end
+      -- local cmp_status_ok, cmp = pcall(require, "cmp")
+      -- if cmp_status_ok then
+      --   local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      --   cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      -- end
     end,
   },
 
   -- 2. NVIM-SURROUND (Thao tác bao quanh)
   {
     "kylechui/nvim-surround",
-    version = "*", -- THEO DOCS: Sử dụng bản ổn định mới nhất (Use for stability)
+    version = "*",      -- THEO DOCS: Sử dụng bản ổn định mới nhất (Use for stability)
     event = "VeryLazy", -- Load lười để không làm chậm khởi động
     config = function()
       -- THEO DOCS: Để trống {} để sử dụng cấu hình mặc định cực mạnh (defaults)
