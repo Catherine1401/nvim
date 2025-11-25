@@ -63,4 +63,4 @@ map("n", "J", "mzJ`z", { desc = "Nối dòng (Giữ vị trí con trỏ)" })
 
 -- tree
 map('n', '<leader>e', ':Neotree<CR>', {silent = true})
-map('n', '<leader>o', ':Neotree action=close<CR>', {silent = true})
+map('n', '<leader>p', ':Neotree action=close<CR>', {silent = true})
