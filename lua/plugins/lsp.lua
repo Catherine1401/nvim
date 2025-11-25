@@ -43,6 +43,8 @@ return {
 					"cssls",
 					"pyright",
 					"marksman",
+					"clangd",
+					"jdtls",
 
 					-- Formatters & Linters (Không phải LSP)
 					"prettier", -- Formatter đa năng
