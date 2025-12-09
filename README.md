@@ -3,6 +3,7 @@
 ## Requirement
 
 - git
+- gzip
 - nerd font
 - fd
 - ripgrep
@@ -37,6 +38,8 @@ scoop install ripgrep
 scoop install fzf
 # instal curl
 scoop install curl
+# install gzip
+scoop install gzip
 # install python
 scoop install python
 # install nodejs

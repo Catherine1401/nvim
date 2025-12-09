@@ -1,0 +1,84 @@
+-- return {
+-- 	{
+-- 		"yetone/avante.nvim",
+-- 		event = "VeryLazy",
+-- 		lazy = false,
+-- 		version = false,
+-- 		build = vim.fn.has("win32") ~= 0
+-- 				and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+-- 			or "make",
+
+-- 		opts = {
+-- 			-- 1. CHUYỂN VỀ GEMINI
+-- 			provider = "gemini",
+
+-- 			-- 2. CẤU HÌNH MODEL
+-- 			gemini = {
+-- 				-- MẸO: Dùng bản "Flash" thay vì "Pro"
+-- 				-- "gemini-1.5-flash-latest": Tốc độ phản hồi siêu nhanh, Rate Limit cực cao, code vẫn rất ngon.
+-- 				-- "gemini-1.5-pro-latest": Thông minh hơn xíu nhưng chậm hơn và dễ dính limit hơn Flash.
+-- 				model = "gemini-1.5-flash-002",
+
+-- 				temperature = 0,
+-- 				max_tokens = 8192,
+-- 			},
+
+-- 			-- 3. GIỮ NGUYÊN CẤU HÌNH "THỦ CÔNG" (Không tự Merge)
+-- 			behaviour = {
+-- 				auto_suggestions = false, -- Tắt ghost text
+-- 				auto_apply_diff_after_generation = false, -- Bắt buộc hiện Diff để chọn
+-- 				enable_fastapply = false, -- Tắt Fast Apply
+-- 				minimize_diff = false,
+-- 				support_paste_from_clipboard = true,
+-- 			},
+
+-- 			-- Các cấu hình giao diện giữ nguyên...
+-- 			mappings = {
+-- 				diff = {
+-- 					ours = "co",
+-- 					theirs = "ct",
+-- 					all_theirs = "ca",
+-- 					both = "cb",
+-- 					cursor = "cc",
+-- 					next = "]x",
+-- 					prev = "[x",
+-- 				},
+-- 			},
+-- 			windows = {
+-- 				position = "right",
+-- 				width = 30,
+-- 				sidebar_header = { align = "center", rounded = true },
+-- 				ask = { start_insert = true },
+-- 			},
+-- 			diff = {
+-- 				autojump = true,
+-- 				list_opener = "copen",
+-- 				override_timeoutlen = 500,
+-- 			},
+-- 		},
+
+-- 		dependencies = {
+-- 			"stevearc/dressing.nvim",
+-- 			"nvim-lua/plenary.nvim",
+-- 			"MunifTanjim/nui.nvim",
+-- 			"nvim-tree/nvim-web-devicons",
+-- 			{
+-- 				"MeanderingProgrammer/render-markdown.nvim",
+-- 				opts = { file_types = { "markdown", "Avante" } },
+-- 				ft = { "markdown", "Avante" },
+-- 			},
+-- 			{
+-- 				"HakonHarnes/img-clip.nvim",
+-- 				event = "VeryLazy",
+-- 				opts = {
+-- 					default = {
+-- 						embed_image_as_base64 = false,
+-- 						prompt_for_file_name = false,
+-- 						drag_and_drop = { insert_mode = true },
+-- 						use_absolute_path = true,
+-- 					},
+-- 				},
+-- 			},
+-- 		},
+-- 	},
+-- }

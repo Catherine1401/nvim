@@ -45,6 +45,7 @@ return {
 					"marksman",
 					"clangd",
 					"jdtls",
+					"rust_analyzer",
 
 					-- Formatters & Linters (Không phải LSP)
 					"prettier", -- Formatter đa năng
@@ -54,6 +55,11 @@ return {
 					"eslint_d",
 					"jsonlint",
 					"emmet-language-server",
+					"clang-format",
+					"isort",
+					"black",
+					"google-java-format",
+					"rustfmt",
 				},
 			})
 
@@ -215,9 +221,9 @@ return {
 
 					-- Format (Đổi từ <leader>ff sang <leader>cf cho đúng chuẩn Code Format)
 					-- Vì <leader>ff thường dùng cho Find Files
-					vim.keymap.set("n", "<leader>cf", function()
-						vim.lsp.buf.format({ async = true })
-					end, { buffer = ev.buf, desc = "Format Code" })
+					-- vim.keymap.set("n", "<leader>cf", function()
+					-- 	vim.lsp.buf.format({ async = true })
+					-- end, { buffer = ev.buf, desc = "Format Code" })
 				end,
 			})
 		end,

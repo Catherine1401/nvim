@@ -1,52 +1,5 @@
 return {
 	{
-		"stevearc/conform.nvim",
-		event = { "BufWritePre" }, -- Load khi chuẩn bị lưu file
-		cmd = { "ConformInfo" },
-		keys = {
-			{
-				-- Phím tắt Format thủ công
-				"<leader>cf",
-				function()
-					require("conform").format({ async = true, lsp_format = "fallback" })
-				end,
-				mode = "",
-				desc = "Format Code",
-			},
-		},
-		opts = {
-			-- 1. Định nghĩa Formatter cho từng loại file
-			formatters_by_ft = {
-				lua = { "stylua" },
-
-				-- Web Stack (Dùng Prettier cho tất cả)
-				javascript = { "prettier" },
-				typescript = { "prettier" },
-				javascriptreact = { "prettier" },
-				typescriptreact = { "prettier" },
-				css = { "prettier" },
-				html = { "prettier" },
-				json = { "prettier" },
-				yaml = { "prettier" },
-				markdown = { "prettier" },
-				graphql = { "prettier" },
-
-				-- Shell Script
-				sh = { "shfmt" },
-
-				-- Flutter/Dart: Để trống!
-				-- Conform sẽ không tìm thấy formatter nào ở đây,
-				-- và nó sẽ tự động dùng LSP (Dart Analysis) nhờ tính năng lsp_format = "fallback"
-			},
-
-			-- 2. Cấu hình Format khi lưu (Auto Save)
-			-- format_on_save = {
-			--   timeout_ms = 500,        -- Thời gian chờ tối đa 0.5s (để không bị lag máy)
-			--   lsp_format = "fallback", -- QUAN TRỌNG: Nếu không có tool format riêng, hãy dùng LSP
-			-- },
-		},
-	},
-	{
 		"mfussenegger/nvim-lint",
 		event = { "BufReadPre", "BufNewFile" },
 		config = function()
