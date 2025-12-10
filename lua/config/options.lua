@@ -30,3 +30,7 @@ vim.opt.splitbelow = true      -- Chia màn hình ngang thì cửa sổ mới n�
 vim.opt.scrolloff = 8          -- Luôn giữ con trỏ cách mép trên/dưới 8 dòng (để dễ nhìn ngữ cảnh)
 vim.opt.sidescrolloff = 8      -- Tương tự với mép trái/phải
 vim.opt.hidden = true
+
+-- other config
+vim.opt.fileformat = "unix"
+vim.opt.fileformats = "unix,dos"
