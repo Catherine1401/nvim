@@ -30,7 +30,7 @@ return {
 			set({ "n", "x" }, "<leader>n", function()
 				mc.matchAddCursor(1)
 			end, { desc = "Add next match" })
-			set({ "n", "x" }, "<leader>s", function()
+			set({ "n", "x" }, "<leader>,", function()
 				mc.matchSkipCursor(1)
 			end, { desc = "Skip next match" })
 			set({ "n", "x" }, "<leader>N", function()
