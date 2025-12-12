@@ -152,7 +152,14 @@ return {
 			-- ======================================================================
 			vim.diagnostic.config({
 				virtual_text = false, -- Mặc định tắt cho gọn
-				signs = true,
+				signs = {
+					text = {
+						[vim.diagnostic.severity.ERROR] = "✘",
+						[vim.diagnostic.severity.WARN] = "▲",
+						[vim.diagnostic.severity.HINT] = "⚑",
+						[vim.diagnostic.severity.INFO] = "»",
+					},
+				},
 				underline = true,
 				update_in_insert = false,
 				severity_sort = true,
