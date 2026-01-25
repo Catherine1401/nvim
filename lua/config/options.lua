@@ -4,8 +4,9 @@ vim.opt.number = true          -- Hiện số dòng
 vim.opt.relativenumber = true  -- Hiện số dòng tương đối (giúp nhảy dòng nhanh bằng j/k)
 vim.opt.termguicolors = true   -- Bật màu True Color (24-bit) cho giao diện đẹp
 vim.opt.cursorline = true      -- Highlight dòng hiện tại
-vim.opt.cursorcolumn = true
+-- vim.opt.cursorcolumn = true
 vim.opt.wrap = false           -- Không tự xuống dòng (để code dài thì kéo ngang xem cho dễ)
+vim.opt.colorcolumn = "80"
 
 -- 2. Cấu hình Indent (Thụt đầu dòng) - Chuẩn cho Flutter/Lua
 vim.opt.expandtab = true       -- Dùng dấu cách thay cho Tab

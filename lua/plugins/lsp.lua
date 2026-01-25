@@ -3,18 +3,19 @@ return {
 		"neovim/nvim-lspconfig",
 		event = { "BufReadPre", "BufNewFile" },
 		dependencies = {
-			"williamboman/mason.nvim", -- Quản lý gói
-			"williamboman/mason-lspconfig.nvim", -- Cầu nối LSP
-			"WhoIsSethDaniel/mason-tool-installer.nvim", -- Cầu nối Tool (Format/Lint) - QUAN TRỌNG
-			"saghen/blink.cmp", -- Gợi ý code
-			"b0o/schemastore.nvim", -- Hỗ trợ JSON Schema
+			"williamboman/mason.nvim",
+			"williamboman/mason-lspconfig.nvim",
+			"WhoIsSethDaniel/mason-tool-installer.nvim",
+			"saghen/blink.cmp",
+			"b0o/schemastore.nvim",
+			-- Thêm plugin màu Tailwind vào dependencies của LSP
+			"roobert/tailwindcss-colorizer-cmp.nvim",
 		},
 		config = function()
-			-- 1. Lấy capabilities từ Blink
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
 			-- ======================================================================
-			-- 2. SETUP MASON (Trình quản lý gói)
+			-- 2. SETUP MASON
 			-- ======================================================================
 			require("mason").setup({
 				ui = {
@@ -31,25 +32,32 @@ return {
 			})
 
 			-- ======================================================================
-			-- 3. TỰ ĐỘNG CÀI ĐẶT TOÀN BỘ (LSP + TOOL)
+			-- 3. TỰ ĐỘNG CÀI ĐẶT TOÀN BỘ
 			-- ======================================================================
 			require("mason-tool-installer").setup({
 				ensure_installed = {
-					-- LSP Servers
+					-- Core
 					"lua_ls",
 					"jsonls",
 					"yamlls",
-					"html",
+
+					-- === WEB DEV STACK (MỚI) ===
+					"vtsls", -- Thay thế tsserver (Nhanh hơn, xịn hơn)
+					"eslint", -- Linter bắt buộc cho Next.js
+					"tailwindcss", -- Tailwind CSS
 					"cssls",
+					"html",
+
+					-- Backend/Other
 					"pyright",
 					"marksman",
 					"clangd",
 					"jdtls",
 					"rust_analyzer",
 
-					-- Formatters & Linters (Không phải LSP)
-					"prettier", -- Formatter đa năng
-					"markdownlint", -- Linter check lỗi markdown
+					-- Formatters & Linters
+					"prettier", -- Formatter chuẩn cho JS/TS/React
+					"markdownlint",
 					"stylua",
 					"shfmt",
 					"eslint_d",
@@ -63,16 +71,12 @@ return {
 				},
 			})
 
-			-- ======================================================================
-			-- 4. SETUP MASON-LSPCONFIG (Tự động bật LSP)
-			-- ======================================================================
 			require("mason-lspconfig").setup({
-				-- Không cần ensure_installed ở đây nữa vì mason-tool-installer lo rồi
 				automatic_enable = true,
 			})
 
 			-- ======================================================================
-			-- 5. CẤU HÌNH CHI TIẾT SERVER (Dùng vim.lsp.config)
+			-- 5. CẤU HÌNH CHI TIẾT SERVER (Style 0.11)
 			-- ======================================================================
 
 			-- Lua
@@ -91,7 +95,54 @@ return {
 				},
 			})
 
-			-- === CẤU HÌNH RIÊNG CHO EMMET ===
+			-- === JS / TS / REACT / NEXTJS (VTSLS) ===
+			-- vtsls ngon hơn tsserver ở khoản Auto Import và Rename File
+			vim.lsp.config("vtsls", {
+				capabilities = capabilities,
+				settings = {
+					complete_function_calls = true,
+					vtsls = {
+						enableMoveToFileCodeAction = true,
+						autoUseWorkspaceTsdk = true,
+						experimental = {
+							completion = {
+								enableServerSideFuzzyMatch = true,
+							},
+						},
+					},
+					typescript = {
+						updateImportsOnFileMove = { enabled = "always" },
+						suggest = {
+							completeFunctionCalls = true,
+						},
+						inlayHints = {
+							parameterNames = { enabled = "literals" },
+							parameterTypes = { enabled = true },
+							variableTypes = { enabled = false },
+							propertyDeclarationTypes = { enabled = true },
+							functionLikeReturnTypes = { enabled = true },
+							enumMemberValues = { enabled = true },
+						},
+					},
+				},
+			})
+
+			-- === TAILWIND CSS ===
+			vim.lsp.config("tailwindcss", {
+				capabilities = capabilities,
+				settings = {
+					tailwindCSS = {
+						experimental = {
+							classRegex = {
+								{ "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+								{ "cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+							},
+						},
+					},
+				},
+			})
+
+			-- === EMMET ===
 			vim.lsp.config("emmet_language_server", {
 				capabilities = capabilities,
 				filetypes = {
@@ -107,20 +158,15 @@ return {
 					"eruby",
 					"pug",
 				},
-
-				-- THÊM ĐOẠN NÀY: Ép Emmet dùng 2 spaces
 				init_options = {
 					showExpandedAbbreviation = "always",
 					showAbbreviationSuggestions = true,
 					showSuggestionsAsSnippets = true,
-					-- Đây là chìa khóa:
 					preferences = {
-						["output.indent"] = "  ", -- Bắt buộc dùng 2 dấu cách
+						["output.indent"] = "  ",
 						["output.inlineBreak"] = 0,
 					},
 				},
-
-				-- Giữ nguyên đoạn này để tắt format của Emmet (nhường cho Prettier)
 				on_attach = function(client)
 					client.server_capabilities.documentFormattingProvider = false
 					client.server_capabilities.documentRangeFormattingProvider = false
@@ -142,7 +188,13 @@ return {
 			-- Các server khác (Mặc định)
 			local installed_servers = require("mason-lspconfig").get_installed_servers()
 			for _, server_name in ipairs(installed_servers) do
-				if server_name ~= "lua_ls" and server_name ~= "jsonls" and server_name ~= "dartls" then
+				if
+					server_name ~= "lua_ls"
+					and server_name ~= "jsonls"
+					and server_name ~= "dartls"
+					and server_name ~= "vtsls" -- Loại trừ vì đã config riêng
+					and server_name ~= "tailwindcss" -- Loại trừ vì đã config riêng
+				then
 					vim.lsp.config(server_name, { capabilities = capabilities })
 				end
 			end
@@ -151,7 +203,7 @@ return {
 			-- 6. TINH CHỈNH GIAO DIỆN (DIAGNOSTICS)
 			-- ======================================================================
 			vim.diagnostic.config({
-				virtual_text = false, -- Mặc định tắt cho gọn
+				virtual_text = false,
 				signs = {
 					text = {
 						[vim.diagnostic.severity.ERROR] = "✘",
@@ -173,21 +225,19 @@ return {
 				},
 			})
 
-			-- Hàm bật/tắt Virtual Text thông minh
+			-- Hàm bật/tắt Virtual Text
 			local function toggle_visual_diagnostics()
 				local config = vim.diagnostic.config()
 				local vt = config.virtual_text
-				-- Logic kiểm tra đơn giản hơn: Nếu đang tắt hoặc false -> Bật lên
 				if vt == false then
-					vim.diagnostic.config({ virtual_text = { prefix = "●" } }) -- Bật
+					vim.diagnostic.config({ virtual_text = { prefix = "●" } })
 					vim.notify("Virtual Text: ON", "info")
 				else
-					vim.diagnostic.config({ virtual_text = false }) -- Tắt
+					vim.diagnostic.config({ virtual_text = false })
 					vim.notify("Virtual Text: OFF", "warn")
 				end
 			end
 
-			-- Phím tắt Toggle Diagnostic
 			vim.keymap.set("n", "<leader>dt", toggle_visual_diagnostics, { desc = "Toggle Diagnostics Text" })
 
 			-- ======================================================================
@@ -197,8 +247,7 @@ return {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
 					local opts = { buffer = ev.buf }
-
-					-- Định nghĩa (Go to)
+					-- (Giữ nguyên các keymap cũ của cậu)
 					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = ev.buf, desc = "Go to declaration" })
 					vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = ev.buf, desc = "Go to definition" })
 					vim.keymap.set(
@@ -207,8 +256,6 @@ return {
 						vim.lsp.buf.implementation,
 						{ buffer = ev.buf, desc = "Go to implementation" }
 					)
-
-					-- Thông tin (Info)
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = ev.buf, desc = "Hover Info" })
 					vim.keymap.set(
 						"n",
@@ -216,8 +263,6 @@ return {
 						vim.lsp.buf.signature_help,
 						{ buffer = ev.buf, desc = "Signature Help" }
 					)
-
-					-- Thao tác (Action)
 					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { buffer = ev.buf, desc = "Rename Symbol" })
 					vim.keymap.set(
 						{ "n", "v" },
@@ -225,12 +270,6 @@ return {
 						vim.lsp.buf.code_action,
 						{ buffer = ev.buf, desc = "Code Action" }
 					)
-
-					-- Format (Đổi từ <leader>ff sang <leader>cf cho đúng chuẩn Code Format)
-					-- Vì <leader>ff thường dùng cho Find Files
-					-- vim.keymap.set("n", "<leader>cf", function()
-					-- 	vim.lsp.buf.format({ async = true })
-					-- end, { buffer = ev.buf, desc = "Format Code" })
 				end,
 			})
 		end,
