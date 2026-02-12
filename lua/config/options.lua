@@ -7,6 +7,11 @@ vim.opt.cursorline = true      -- Highlight dòng hiện tại
 -- vim.opt.cursorcolumn = true
 vim.opt.wrap = false           -- Không tự xuống dòng (để code dài thì kéo ngang xem cho dễ)
 vim.opt.colorcolumn = "80"
+vim.opt.conceallevel = 2        -- Cho phép hiển thị các ký tự thay thế đẹp mắt
+vim.opt.laststatus = 3         -- Dùng một thanh trạng thái chung duy nhất (Global Statusline) cho đẹp
+vim.opt.signcolumn = "yes"     -- Luôn hiện cột bên trái để các icon cảnh báo lỗi không làm xê dịch code
+
+
 
 -- 2. Cấu hình Indent (Thụt đầu dòng) - Chuẩn cho Flutter/Lua
 vim.opt.expandtab = true       -- Dùng dấu cách thay cho Tab
