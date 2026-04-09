@@ -1,9 +1,7 @@
 {
   "Import Material": {
     "prefix": "imt",
-    "body": [
-      "import 'package:flutter/material.dart';\n"
-    ],
+    "body": ["import 'package:flutter/material.dart';"],
     "description": "Quick import material"
   }
 }

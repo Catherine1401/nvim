@@ -1,0 +1,11 @@
+{
+  "name": "my-snippets",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "dart",
+        "path": "/home/hw/.config/nvim/snippets/custom/dart.json"
+      }
+    ]
+  }
+}
