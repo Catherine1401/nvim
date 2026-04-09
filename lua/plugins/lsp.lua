@@ -52,7 +52,7 @@ return {
 					"pyright",
 					"marksman",
 					"clangd",
-					"jdtls",
+					-- "jdtls",
 					"rust_analyzer",
 
 					-- Formatters & Linters
@@ -67,7 +67,7 @@ return {
 					"isort",
 					"black",
 					"google-java-format",
-					"rustfmt",
+					-- "rustfmt",
 				},
 			})
 
