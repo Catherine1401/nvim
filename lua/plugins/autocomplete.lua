@@ -2,8 +2,10 @@ return {
 
 	{
 		"saghen/blink.cmp",
-		build = "cargo build --release",
-		dependencies = { "L3MON4D3/LuaSnip" },
+		build = function()
+			require("blink.cmp").build():pwait()
+		end,
+		dependencies = { "L3MON4D3/LuaSnip", "saghen/blink.lib" },
 
 		opts = {
 			snippets = {
@@ -57,4 +59,3 @@ return {
 		end,
 	},
 }
-

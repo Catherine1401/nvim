@@ -1,7 +1,7 @@
 return {
   {
     "nvim-telescope/telescope.nvim",
-    tag = "0.1.8", -- Dùng bản tag ổn định thay vì branch master (theo khuyến nghị của docs)
+    -- tag = "0.1.8", -- Dùng bản tag ổn định thay vì branch master (theo khuyến nghị của docs)
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",

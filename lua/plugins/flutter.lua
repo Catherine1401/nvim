@@ -76,9 +76,9 @@ return {
         -- 8. Cấu hình LSP (Dart Analysis)
         lsp = {
           color = { -- Hiển thị màu sắc thật trong code (VD: Color(0xFFFF0000))
-            enabled = true,
-            background = true,
-            virtual_text = true,
+            -- enabled = false,
+            -- background = true,
+            -- virtual_text = true,
           },
           on_attach = function(client, bufnr)
             -- Có thể thêm keymap riêng cho LSP ở đây nếu cần
