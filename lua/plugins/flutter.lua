@@ -11,6 +11,14 @@ return {
       -- Lấy capabilities từ blink.cmp để LSP hoạt động mượt mà
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+      -- Tắt file-watcher động của LSP (xem lua/plugins/lsp.lua)
+      -- Repo Flutter lớn có .dart_tool/ và build/ với hàng chục nghìn file
+      capabilities.workspace = capabilities.workspace or {}
+      capabilities.workspace.didChangeWatchedFiles = {
+        dynamicRegistration = false,
+        relativePatternSupport = false,
+      }
+
       require("flutter-tools").setup({
         -- 1. Giao diện (UI)
         ui = {
@@ -26,10 +34,12 @@ return {
           },
         },
 
-        -- 3. Hướng dẫn Widget (Widget Guides) - Tính năng cực hay
-        -- Vẽ đường kẻ nối Widget cha với con, giúp nhìn cây Widget dễ hơn
+        -- 3. Hướng dẫn Widget (Widget Guides)
+        -- Vẽ đường kẻ nối Widget cha với con dựa trên notification flutter/outline
+        -- của dartls, tính lại mỗi lần buffer đổi -> rất nặng trên project lớn.
+        -- Tắt để tránh đơ khi mở/sửa file Dart.
         widget_guides = {
-          enabled = true,
+          enabled = false,
         },
 
         -- 4. Closing Tags (Tự động hiện chú thích đóng ngoặc)
@@ -41,8 +51,10 @@ return {
         },
 
         -- 5. Dev Tools & Log
+        -- Tắt mặc định để không tạo buffer log phình to theo thời gian.
+        -- Cần xem log thì bấm <leader>fl (FlutterLogToggle).
         dev_log = {
-          enabled = true,
+          enabled = false,
           open_cmd = "tabedit", -- Mở log ở tab mới cho rộng
         },
         
@@ -86,6 +98,13 @@ return {
           capabilities = capabilities, -- Quan trọng: Kết nối với blink.cmp
           
           settings = {
+            -- Không phân tích pub-cache và Flutter SDK: giảm mạnh số file
+            -- Dart Analysis Server phải index khi mở project lớn.
+            -- Go-to-definition vào SDK/package vẫn hoạt động bình thường.
+            analysisExcludedFolders = {
+              vim.fn.expand("$HOME/.pub-cache"),
+              "/home/huyvv/develop/flutter",
+            },
             showTodos = true,
             completeFunctionCalls = true,
             renameFilesWithClasses = "prompt", -- Hỏi khi đổi tên file class

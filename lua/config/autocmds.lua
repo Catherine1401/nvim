@@ -92,6 +92,57 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- ============================================================================
+-- 8. CHẾ ĐỘ FILE LỚN (LARGE FILE GUARD)
+-- ============================================================================
+-- File quá to (generated code, bundle, log, .g.dart, .freezed.dart...) sẽ làm
+-- treo Neovim vì mọi plugin bám theo buffer đều phải tính lại liên tục.
+-- Khi vượt ngưỡng, đặt cờ vim.b.large_file và tắt các thứ tốn tài nguyên.
+-- Cờ này cũng được lua/plugins/highlight.lua dùng để bỏ qua treesitter.
+
+local LARGE_FILE_SIZE = 1024 * 1024 -- 1 MB
+
+vim.api.nvim_create_autocmd("BufReadPre", {
+  group = augroup("large_file"),
+  callback = function(event)
+    local ok, stats = pcall((vim.uv or vim.loop).fs_stat, vim.api.nvim_buf_get_name(event.buf))
+    if not (ok and stats and stats.size > LARGE_FILE_SIZE) then
+      return
+    end
+
+    vim.b[event.buf].large_file = true
+
+    -- Cờ chuẩn của mini.nvim để tắt cho riêng buffer này
+    vim.b[event.buf].minicursorword_disable = true
+    vim.b[event.buf].miniindentscope_disable = true
+
+    vim.bo[event.buf].swapfile = false
+    vim.bo[event.buf].undofile = false
+
+    -- Đặt sau khi filetype đã được nhận diện, nếu không syntax bị bật lại
+    vim.api.nvim_create_autocmd("BufWinEnter", {
+      buffer = event.buf,
+      once = true,
+      callback = function()
+        -- Tắt syntax regex (treesitter đã bị chặn bởi cờ large_file ở highlight.lua)
+        vim.bo.syntax = ""
+        vim.opt_local.foldmethod = "manual"
+        vim.opt_local.spell = false
+        vim.opt_local.list = false
+        vim.opt_local.relativenumber = false -- redraw số dòng tương đối rất tốn khi cuộn
+        vim.opt_local.cursorline = false
+        vim.opt_local.colorcolumn = ""
+      end,
+    })
+
+    vim.notify(
+      string.format("File lớn (%.1f MB) - đã bật chế độ nhẹ", stats.size / 1024 / 1024),
+      vim.log.levels.WARN,
+      { title = "Large file" }
+    )
+  end,
+})
+
 vim.diagnostic.config({
   signs = true,
   underline = true

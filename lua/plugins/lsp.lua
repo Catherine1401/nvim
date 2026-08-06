@@ -14,6 +14,15 @@ return {
 		config = function()
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+			-- Tắt file-watcher động của LSP.
+			-- Trên repo lớn, server đăng ký watcher cho hàng chục nghìn file
+			-- (.dart_tool/, build/, node_modules/...) khiến UI đơ khi mở project.
+			capabilities.workspace = capabilities.workspace or {}
+			capabilities.workspace.didChangeWatchedFiles = {
+				dynamicRegistration = false,
+				relativePatternSupport = false,
+			}
+
 			-- ======================================================================
 			-- 2. SETUP MASON
 			-- ======================================================================
