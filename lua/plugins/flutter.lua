@@ -19,6 +19,16 @@ return {
         relativePatternSupport = false,
       }
 
+      -- Thư mục dartls không cần phân tích: giảm mạnh số file phải index khi
+      -- mở project lớn. Go-to-definition vào SDK/package vẫn hoạt động.
+      -- Đường dẫn Flutter SDK suy ra từ lệnh flutter trong PATH, không hardcode.
+      local excluded_folders = { vim.fn.expand("$HOME/.pub-cache") }
+      local flutter_bin = vim.fn.exepath("flutter")
+      if flutter_bin ~= "" then
+        -- <sdk>/bin/flutter -> <sdk>
+        excluded_folders[#excluded_folders + 1] = vim.fs.dirname(vim.fs.dirname(flutter_bin))
+      end
+
       require("flutter-tools").setup({
         -- 1. Giao diện (UI)
         ui = {
@@ -98,13 +108,7 @@ return {
           capabilities = capabilities, -- Quan trọng: Kết nối với blink.cmp
           
           settings = {
-            -- Không phân tích pub-cache và Flutter SDK: giảm mạnh số file
-            -- Dart Analysis Server phải index khi mở project lớn.
-            -- Go-to-definition vào SDK/package vẫn hoạt động bình thường.
-            analysisExcludedFolders = {
-              vim.fn.expand("$HOME/.pub-cache"),
-              "/home/huyvv/develop/flutter",
-            },
+            analysisExcludedFolders = excluded_folders,
             showTodos = true,
             completeFunctionCalls = true,
             renameFilesWithClasses = "prompt", -- Hỏi khi đổi tên file class

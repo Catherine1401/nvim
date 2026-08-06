@@ -44,7 +44,7 @@ Python, C/C++, Rust, and Markdown/Obsidian.
 
 - **Flutter** — Flutter SDK + Dart SDK (`flutter doctor`)
 - **.NET** — .NET SDK + `dotnet tool install -g EasyDotnet`
-- **Terminal** — `zsh` (currently hard-coded in `toggleterm`), `lazygit` (optional)
+- **Terminal** — `zsh` if available, otherwise `$SHELL`; `lazygit` (optional)
 - `tree-sitter-cli`, `luarocks`, `rustup` — only if you need to compile parsers or work with Rust
 
 ---
@@ -160,7 +160,6 @@ Leader is `<Space>`. Press `<leader>` and wait 200 ms for which-key to show hint
 | `<leader>ca` | Code action |
 | `<leader>cf` | Format manually (conform.nvim) |
 | `<leader>dt` | Toggle diagnostic virtual text |
-| `<S-Space>` | Expand selection via Treesitter |
 | `[c` | Jump to the parent context |
 
 > Virtual text is **off** by default to reduce noise; diagnostics show up in the sign column (`✘ ▲ ⚑ »`).
@@ -225,9 +224,9 @@ In insert mode: `<A-f>` accept suggestion · `<A-w>` accept word · `<A-a>` acce
 | `snippets.lua` | LuaSnip + friendly-snippets, vim-snippets | Snippet sources |
 | `format.lua` | conform.nvim | Formatters (stylua, prettier, black/isort, clang-format…) |
 | `html.lua` | nvim-lint | Linters (eslint_d, markdownlint, jsonlint) |
-| `highlight.lua` | nvim-treesitter (`main` branch) | Syntax highlighting, incremental selection |
+| `highlight.lua` | nvim-treesitter (`main` branch) | Parser installation, Treesitter highlighting (skipped above 200 KB) |
 | `indentline.lua` | indent-blankline, mini.indentscope, treesitter-context | Indent guides and sticky scope |
-| `flutter.lua` | flutter-tools.nvim + nvim-dap, dressing | Flutter: run, hot reload, widget guides, debugger |
+| `flutter.lua` | flutter-tools.nvim + nvim-dap, dressing | Flutter: run, hot reload, closing tags, debugger |
 | `bloc.lua` | flutter-bloc.nvim + none-ls | BLoC boilerplate generation |
 | `dotnet.lua` | easy-dotnet.nvim | Build/run/test/debug for .NET |
 | `web.lua` | nvim-ts-autotag, tailwindcss-colorizer-cmp | Auto-close HTML tags, Tailwind color swatches |
@@ -274,21 +273,26 @@ Personal snippets live in `snippets/custom/` in VS Code format, declared in `pac
   "name": "my-snippets",
   "contributes": {
     "snippets": [
-      { "language": "dart", "path": "/home/hw/.config/nvim/snippets/custom/dart.json" }
+      { "language": "dart", "path": "./dart.json" }
     ]
   }
 }
 ```
 
-> The path in `package.json` is currently **absolute** (`/home/hw/...`). Change it to a relative path (`./dart.json`) or to your own user's path, otherwise the snippets will not load.
+> The path is **relative to `package.json`**, so it works on any machine — no need to touch it.
 
 ---
 
 ## Things to change on a new machine
 
-This config was migrated from Windows to Linux, so a few values are still hard-coded:
+Nothing is hard-coded to a single machine any more. Three values are resolved at runtime, and one is a matter of taste:
 
-1. **`lua/plugins/obsidian.lua`** — the workspace still points at `C:/Users/hw/obsidian`. Update it to your real vault path.
-2. **`snippets/custom/package.json`** — absolute path `/home/hw/...` (see the section above).
-3. **`lua/plugins/terminal.lua`** — `shell = "zsh"`. Change it if you use a different shell.
-4. **`lua/plugins/starter.lua`** — the `HW` ASCII logo in the `header` block.
+1. **Obsidian vault** — `lua/plugins/obsidian.lua` defaults to `~/obsidian`. If your vault lives elsewhere, export `OBSIDIAN_VAULT` instead of editing the file:
+
+   ```bash
+   export OBSIDIAN_VAULT="$HOME/Documents/vault"
+   ```
+
+2. **Flutter SDK** — `lua/plugins/flutter.lua` derives the SDK path from `flutter` in your `PATH` (`<sdk>/bin/flutter` → `<sdk>`) and hands it to `dartls` as an excluded analysis folder. Nothing to do as long as `flutter` is on your `PATH`.
+3. **Shell** — `lua/plugins/terminal.lua` picks `zsh` when it is on your `PATH` and falls back to `vim.o.shell` (`$SHELL`) otherwise. Nothing to do.
+4. **`lua/plugins/starter.lua`** — the ASCII logo in the `header` block. Purely cosmetic.

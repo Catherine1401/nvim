@@ -1,11 +1,15 @@
+-- Đường dẫn vault: đặt biến môi trường OBSIDIAN_VAULT nếu vault không nằm ở
+-- ~/obsidian (ví dụ: export OBSIDIAN_VAULT="$HOME/Documents/vault")
+local vault = vim.env.OBSIDIAN_VAULT or vim.fn.expand("~/obsidian")
+
 return {
 	{
 		"obsidian-nvim/obsidian.nvim",
 		version = "*",
 		lazy = true,
 		event = {
-			"BufReadPre C:/Users/hw/obsidian/**.md",
-			"BufNewFile C:/Users/hw/obsidian/**.md",
+			"BufReadPre " .. vault .. "/**.md",
+			"BufNewFile " .. vault .. "/**.md",
 		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -19,7 +23,7 @@ return {
 			workspaces = {
 				{
 					name = "personal",
-					path = "C:/Users/hw/obsidian",
+					path = vault,
 				},
 			},
 

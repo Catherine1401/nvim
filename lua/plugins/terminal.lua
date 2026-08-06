@@ -6,8 +6,9 @@ return {
 
 		-- Cấu hình plugin
 		opts = {
-			-- ĐÃ ĐỔI: Chuyển từ "powershell.exe" sang "zsh" để chạy được trên Arch Linux
-			shell = "zsh",
+			-- Ưu tiên zsh nếu có trong PATH, không thì dùng shell hệ thống ($SHELL).
+			-- Không hardcode để config chạy được trên máy không cài zsh.
+			shell = vim.fn.exepath("zsh") ~= "" and vim.fn.exepath("zsh") or vim.o.shell,
 
 			-- 1. Kích thước (Size):
 			size = function(term)
