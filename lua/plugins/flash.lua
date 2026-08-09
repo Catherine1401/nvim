@@ -1,3 +1,4 @@
+-- flash jump
 return {
 	{
 		"folke/flash.nvim",
