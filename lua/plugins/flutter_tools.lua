@@ -64,13 +64,14 @@ return {
 				-- Tắt mặc định để không tạo buffer log phình to theo thời gian.
 				-- Cần xem log thì bấm <leader>fl (FlutterLogToggle).
 				dev_log = {
-					enabled = false,
+					enabled = true,
+					notify_errors = true, -- sửa lỗi chính tả: nofify_errors -> notify_errors
 					open_cmd = "tabedit", -- Mở log ở tab mới cho rộng
 				},
 
 				-- 6. Outline (Cấu trúc file)
 				outline = {
-					open_cmd = "30vnew", -- Mở bên phải, rộng 30
+					-- open_cmd = "30vnew", -- Mở bên phải, rộng 30
 					auto_open = false, -- Không tự mở, khi nào cần thì gọi
 				},
 
@@ -97,14 +98,6 @@ return {
 
 				-- 8. Cấu hình LSP (Dart Analysis)
 				lsp = {
-					color = { -- Hiển thị màu sắc thật trong code (VD: Color(0xFFFF0000))
-						-- enabled = false,
-						-- background = true,
-						-- virtual_text = true,
-					},
-					on_attach = function(client, bufnr)
-						-- Có thể thêm keymap riêng cho LSP ở đây nếu cần
-					end,
 					capabilities = capabilities, -- Quan trọng: Kết nối với blink.cmp
 
 					settings = {
@@ -133,15 +126,33 @@ return {
 			},
 			-- Nhóm lệnh chạy App
 			{ "<leader>fr", "<cmd>FlutterRun<cr>", desc = "Chạy App (Run)" },
+			{ "<leader>fg", "<cmd>FlutterDebug<cr>", desc = "Chạy App (Force Debug)" },
 			{ "<leader>fq", "<cmd>FlutterQuit<cr>", desc = "Tắt App (Quit)" },
 			{ "<leader>fR", "<cmd>FlutterRestart<cr>", desc = "Hot Restart (Toàn bộ)" },
 			{ "<leader>fh", "<cmd>FlutterReload<cr>", desc = "Hot Reload (Nhanh)" },
+			{ "<leader>fa", "<cmd>FlutterAttach<cr>", desc = "Attach vào App đang chạy" },
+			{ "<leader>fx", "<cmd>FlutterDetach<cr>", desc = "Detach (giữ app chạy trên máy)" },
+
 			-- Nhóm lệnh công cụ
 			{ "<leader>fd", "<cmd>FlutterDevices<cr>", desc = "Chọn thiết bị (Devices)" },
 			{ "<leader>fe", "<cmd>FlutterEmulators<cr>", desc = "Chọn máy ảo (Emulators)" },
 			{ "<leader>fo", "<cmd>FlutterOutlineToggle<cr>", desc = "Bật/Tắt Outline" },
+			{ "<leader>fu", "<cmd>FlutterOutlineOpen<cr>", desc = "Mở Outline" },
 			{ "<leader>fl", "<cmd>FlutterLogToggle<cr>", desc = "Bật/Tắt Log" },
+			{ "<leader>fz", "<cmd>FlutterLogClear<cr>", desc = "Xóa Log" },
 			{ "<leader>fc", "<cmd>FlutterCopyProfilerUrl<cr>", desc = "Copy Profiler URL" },
+
+			-- Nhóm Debug/DevTools
+			{ "<leader>fv", "<cmd>FlutterVisualDebug<cr>", desc = "Bật/Tắt Visual Debug" },
+			{ "<leader>fi", "<cmd>FlutterInspectWidget<cr>", desc = "Bật/Tắt Inspect Widget" },
+			{ "<leader>fD", "<cmd>FlutterDevTools<cr>", desc = "Khởi động DevTools Server" },
+			{ "<leader>fO", "<cmd>FlutterOpenDevTools<cr>", desc = "Mở trang DevTools" },
+
+			-- Nhóm LSP & Dart
+			{ "<leader>fp", "<cmd>FlutterPubGet<cr>", desc = "Chạy pub get" },
+			{ "<leader>fj", "<cmd>FlutterReanalyze<cr>", desc = "Buộc LSP phân tích lại" },
+			{ "<leader>fL", "<cmd>FlutterLspRestart<cr>", desc = "Khởi động lại Dart LSP" },
+			{ "<leader>fm", "<cmd>FlutterRename<cr>", desc = "Đổi tên symbol (rename)" },
 		},
 	},
 }

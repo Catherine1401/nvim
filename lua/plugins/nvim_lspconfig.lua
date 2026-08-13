@@ -200,7 +200,7 @@ return {
 				if
 					server_name ~= "lua_ls"
 					and server_name ~= "jsonls"
-					and server_name ~= "dartls"
+					-- and server_name ~= "dartls"
 					and server_name ~= "vtsls" -- Loại trừ vì đã config riêng
 					and server_name ~= "tailwindcss" -- Loại trừ vì đã config riêng
 				then
