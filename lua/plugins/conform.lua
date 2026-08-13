@@ -50,6 +50,10 @@ return {
 				-- Rustfmt là chân ái. Thêm lsp_format = "fallback" để dự phòng.
 				rust = { "rustfmt", lsp_format = "fallback" },
 
+				-- === GO ===
+				-- Chạy tuần tự: Dọn import (goimports) -> Format nghiêm ngặt (gofumpt)
+				go = { "goimports", "gofumpt" },
+
 				-- === SHELL ===
 				sh = { "shfmt" },
 
