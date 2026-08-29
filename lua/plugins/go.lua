@@ -22,7 +22,7 @@ return {
 
 			require("go").setup({
 				-- Giao gopls cho go.nvim tự setup qua nvim-lspconfig, dùng capabilities từ blink.cmp
-        lsp_keymaps = false,
+				lsp_keymaps = false,
 				lsp_cfg = {
 					capabilities = capabilities,
 					settings = {
@@ -47,6 +47,8 @@ return {
 					},
 				},
 			})
+
+			vim.lsp.inlay_hint.enable(false)
 		end,
 	},
 }
