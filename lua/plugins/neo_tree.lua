@@ -57,6 +57,7 @@ return {
 					["m"] = "move",
 					["q"] = "close_window",
 					["R"] = "refresh",
+					["H"] = "toggle_hidden",
 					["?"] = "show_help",
 					["Z"] = "expand_all_nodes",
 				},
