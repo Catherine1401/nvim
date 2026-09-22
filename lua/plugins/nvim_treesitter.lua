@@ -25,6 +25,7 @@ return {
 				"query",
 				"markdown",
 				"markdown_inline",
+				"python",
 				"dart", -- Flutter
 				"c_sharp", -- .NET
 				"go",
