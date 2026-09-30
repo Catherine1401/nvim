@@ -63,5 +63,7 @@ map("x", "p", [["_dP]], { desc = "Paste không mất clipboard" })
 map("n", "J", "mzJ`z", { desc = "Nối dòng (Giữ vị trí con trỏ)" })
 
 -- tree
-map('n', '<leader>e', ':Neotree<CR>', {silent = true})
+-- <leader>e chỉ hiện file đã thay đổi (git status), <leader>E hiện cây đầy đủ
+map('n', '<leader>e', ':Neotree git_status<CR>', {silent = true})
+map('n', '<leader>E', ':Neotree<CR>', {silent = true})
 map('n', '<leader>p', ':Neotree action=close<CR>', {silent = true})
