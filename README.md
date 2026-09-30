@@ -8,6 +8,8 @@ Personal Neovim configuration in Lua, managed with [lazy.nvim](https://github.co
 
 > Personal config, not a distribution. Expect it to change without notice.
 
+<img src="./assets/screenshot.png" alt="Screenshot" width="720">
+
 ## Requirements
 
 - Neovim >= 0.11
