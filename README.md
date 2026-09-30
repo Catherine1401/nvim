@@ -41,3 +41,11 @@ snippets/         # personal snippets
 ```
 
 Press `<Space>` (the leader) to browse keymaps with which-key.
+
+## Contributing
+
+Issues and pull requests are welcome, but this is a personal config, so changes may not be merged.
+
+## License
+
+[MIT](LICENSE)
