@@ -11,7 +11,7 @@ return {
 			-- Lấy capabilities từ blink.cmp để LSP hoạt động mượt mà
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-			-- Tắt file-watcher động của LSP (xem lua/plugins/lsp.lua)
+			-- Tắt file-watcher động của LSP (xem lua/plugins/nvim_lspconfig.lua)
 			-- Repo Flutter lớn có .dart_tool/ và build/ với hàng chục nghìn file
 			capabilities.workspace = capabilities.workspace or {}
 			capabilities.workspace.didChangeWatchedFiles = {
@@ -61,8 +61,7 @@ return {
 				},
 
 				-- 5. Dev Tools & Log
-				-- Tắt mặc định để không tạo buffer log phình to theo thời gian.
-				-- Cần xem log thì bấm <leader>fl (FlutterLogToggle).
+				-- Bật để thu log app; mở/tắt bằng <leader>Fl, xóa bằng <leader>Fz.
 				dev_log = {
 					enabled = true,
 					notify_errors = true, -- sửa lỗi chính tả: nofify_errors -> notify_errors
@@ -118,41 +117,41 @@ return {
 		-- 9. Phím tắt chuyên dụng (Keymaps)
 		keys = {
 			{
-				"<leader>fs",
+				"<leader>Fs",
 				function()
 					require("telescope").extensions.flutter.commands()
 				end,
 				desc = "Flutter Commands",
 			},
 			-- Nhóm lệnh chạy App
-			{ "<leader>fr", "<cmd>FlutterRun<cr>", desc = "Chạy App (Run)" },
-			{ "<leader>fg", "<cmd>FlutterDebug<cr>", desc = "Chạy App (Force Debug)" },
-			{ "<leader>fq", "<cmd>FlutterQuit<cr>", desc = "Tắt App (Quit)" },
-			{ "<leader>fR", "<cmd>FlutterRestart<cr>", desc = "Hot Restart (Toàn bộ)" },
-			{ "<leader>fh", "<cmd>FlutterReload<cr>", desc = "Hot Reload (Nhanh)" },
-			{ "<leader>fa", "<cmd>FlutterAttach<cr>", desc = "Attach vào App đang chạy" },
-			{ "<leader>fx", "<cmd>FlutterDetach<cr>", desc = "Detach (giữ app chạy trên máy)" },
+			{ "<leader>Fr", "<cmd>FlutterRun<cr>", desc = "Chạy App (Run)" },
+			{ "<leader>Fg", "<cmd>FlutterDebug<cr>", desc = "Chạy App (Force Debug)" },
+			{ "<leader>Fq", "<cmd>FlutterQuit<cr>", desc = "Tắt App (Quit)" },
+			{ "<leader>FR", "<cmd>FlutterRestart<cr>", desc = "Hot Restart (Toàn bộ)" },
+			{ "<leader>Fh", "<cmd>FlutterReload<cr>", desc = "Hot Reload (Nhanh)" },
+			{ "<leader>Fa", "<cmd>FlutterAttach<cr>", desc = "Attach vào App đang chạy" },
+			{ "<leader>Fx", "<cmd>FlutterDetach<cr>", desc = "Detach (giữ app chạy trên máy)" },
 
 			-- Nhóm lệnh công cụ
-			{ "<leader>fd", "<cmd>FlutterDevices<cr>", desc = "Chọn thiết bị (Devices)" },
-			{ "<leader>fe", "<cmd>FlutterEmulators<cr>", desc = "Chọn máy ảo (Emulators)" },
-			{ "<leader>fo", "<cmd>FlutterOutlineToggle<cr>", desc = "Bật/Tắt Outline" },
-			{ "<leader>fu", "<cmd>FlutterOutlineOpen<cr>", desc = "Mở Outline" },
-			{ "<leader>fl", "<cmd>FlutterLogToggle<cr>", desc = "Bật/Tắt Log" },
-			{ "<leader>fz", "<cmd>FlutterLogClear<cr>", desc = "Xóa Log" },
-			{ "<leader>fc", "<cmd>FlutterCopyProfilerUrl<cr>", desc = "Copy Profiler URL" },
+			{ "<leader>Fd", "<cmd>FlutterDevices<cr>", desc = "Chọn thiết bị (Devices)" },
+			{ "<leader>Fe", "<cmd>FlutterEmulators<cr>", desc = "Chọn máy ảo (Emulators)" },
+			{ "<leader>Fo", "<cmd>FlutterOutlineToggle<cr>", desc = "Bật/Tắt Outline" },
+			{ "<leader>Fu", "<cmd>FlutterOutlineOpen<cr>", desc = "Mở Outline" },
+			{ "<leader>Fl", "<cmd>FlutterLogToggle<cr>", desc = "Bật/Tắt Log" },
+			{ "<leader>Fz", "<cmd>FlutterLogClear<cr>", desc = "Xóa Log" },
+			{ "<leader>Fc", "<cmd>FlutterCopyProfilerUrl<cr>", desc = "Copy Profiler URL" },
 
 			-- Nhóm Debug/DevTools
-			{ "<leader>fv", "<cmd>FlutterVisualDebug<cr>", desc = "Bật/Tắt Visual Debug" },
-			{ "<leader>fi", "<cmd>FlutterInspectWidget<cr>", desc = "Bật/Tắt Inspect Widget" },
-			{ "<leader>fD", "<cmd>FlutterDevTools<cr>", desc = "Khởi động DevTools Server" },
-			{ "<leader>fO", "<cmd>FlutterOpenDevTools<cr>", desc = "Mở trang DevTools" },
+			{ "<leader>Fv", "<cmd>FlutterVisualDebug<cr>", desc = "Bật/Tắt Visual Debug" },
+			{ "<leader>Fi", "<cmd>FlutterInspectWidget<cr>", desc = "Bật/Tắt Inspect Widget" },
+			{ "<leader>FD", "<cmd>FlutterDevTools<cr>", desc = "Khởi động DevTools Server" },
+			{ "<leader>FO", "<cmd>FlutterOpenDevTools<cr>", desc = "Mở trang DevTools" },
 
 			-- Nhóm LSP & Dart
-			{ "<leader>fp", "<cmd>FlutterPubGet<cr>", desc = "Chạy pub get" },
-			{ "<leader>fj", "<cmd>FlutterReanalyze<cr>", desc = "Buộc LSP phân tích lại" },
-			{ "<leader>fL", "<cmd>FlutterLspRestart<cr>", desc = "Khởi động lại Dart LSP" },
-			{ "<leader>fm", "<cmd>FlutterRename<cr>", desc = "Đổi tên symbol (rename)" },
+			{ "<leader>Fp", "<cmd>FlutterPubGet<cr>", desc = "Chạy pub get" },
+			{ "<leader>Fj", "<cmd>FlutterReanalyze<cr>", desc = "Buộc LSP phân tích lại" },
+			{ "<leader>FL", "<cmd>FlutterLspRestart<cr>", desc = "Khởi động lại Dart LSP" },
+			{ "<leader>Fm", "<cmd>FlutterRename<cr>", desc = "Đổi tên symbol (rename)" },
 		},
 	},
 }
