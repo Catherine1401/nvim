@@ -2,6 +2,42 @@ return {
 	{
 		"jake-stewart/multicursor.nvim",
 		branch = "1.0",
+		-- Chỉ nạp khi dùng phím multicursor lần đầu, vì autocmd SafeState của plugin chạy ở mọi lần gõ phím
+		keys = {
+			{ "<up>", mode = { "n", "x" } },
+			{ "<down>", mode = { "n", "x" } },
+			{ "<M-up>", mode = { "n", "x" } },
+			{ "<M-down>", mode = { "n", "x" } },
+			{ "<leader>n", mode = { "n", "x" } },
+			{ "<leader>,", mode = { "n", "x" } },
+			{ "<leader>N", mode = { "n", "x" } },
+			{ "<leader>S", mode = { "n", "x" } },
+			{ "<c-q>", mode = { "n", "x" } },
+			{ "<leader><c-q>", mode = { "n", "x" } },
+			{ "<leader>m", mode = { "n", "x" } },
+			{ "<leader>mA", mode = { "n", "x" } },
+			{ "g<c-a>", mode = { "n", "x" } },
+			{ "g<c-x>", mode = { "n", "x" } },
+			{ "]d", mode = { "n", "x" } },
+			{ "[d", mode = { "n", "x" } },
+			{ "]s", mode = { "n", "x" } },
+			{ "[S", mode = { "n", "x" } },
+			{ "md", mode = { "n", "x" } },
+			{ "<c-leftmouse>", mode = "n" },
+			{ "ga", mode = "n" },
+			{ "<leader>ma", mode = "n" },
+			{ "<leader>/n", mode = "n" },
+			{ "<leader>/N", mode = "n" },
+			{ "<leader>/s", mode = "n" },
+			{ "<leader>/S", mode = "n" },
+			{ "<leader>/A", mode = "n" },
+			{ "N", mode = "x" },
+			{ "M", mode = "x" },
+			{ "I", mode = "x" },
+			{ "A", mode = "x" },
+			{ "<leader>tr", mode = "x" },
+			{ "<leader>tl", mode = "x" },
+		},
 		config = function()
 			local mc = require("multicursor-nvim")
 			mc.setup()
@@ -85,9 +121,6 @@ return {
 
 			-- Tạo con trỏ mới khớp với Regex trong vùng chọn (Match)
 			set("x", "M", mc.matchCursors, { desc = "Match selections (Regex)" })
-
-			-- Khôi phục con trỏ đã mất (Restore)
-			set("n", "<leader>gv", mc.restoreCursors, { desc = "Restore cursors" })
 
 			-- Thêm con trỏ cho TẤT CẢ các từ khớp trong file (Select All)
 			set({ "n", "x" }, "<leader>mA", mc.matchAllAddCursors, { desc = "Add all matches" })
