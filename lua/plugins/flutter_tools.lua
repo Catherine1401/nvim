@@ -99,6 +99,9 @@ return {
 				lsp = {
 					capabilities = capabilities, -- Quan trọng: Kết nối với blink.cmp
 
+					-- Chỉ nhận diagnostics của file đang mở, tránh dartls đẩy cả project vào nvim
+					handlers = { ["textDocument/publishDiagnostics"] = require("config.diag_filter") },
+
 					settings = {
 						analysisExcludedFolders = excluded_folders,
 						showTodos = true,
