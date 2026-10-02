@@ -57,7 +57,6 @@ return {
 					["m"] = "move",
 					["q"] = "close_window",
 					["R"] = "refresh",
-					["H"] = "toggle_hidden",
 					["?"] = "show_help",
 					["Z"] = "expand_all_nodes",
 				},
@@ -65,6 +64,11 @@ return {
 
 			-- 4. CẤU HÌNH HỆ THỐNG FILE (FILESYSTEM) - PHẦN ĐÃ SỬA CHO WINDOWS
 			filesystem = {
+				window = {
+					mappings = {
+						["H"] = "toggle_hidden",
+					},
+				},
 				filtered_items = {
 					visible = false, -- Cho phép hiện file ẩn nếu muốn
 					hide_dotfiles = true,
