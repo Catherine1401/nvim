@@ -1,0 +1,22 @@
+return {
+	"jaju/neovim-codex",
+	main = "neovim_codex",
+	dependencies = { "MunifTanjim/nui.nvim" },
+	config = true,
+	lazy = false,
+	keys = {
+		{ "<leader>Cc", "<cmd>CodexChat<cr>", desc = "Codex: Toggle chat" },
+		{ "<leader>Ct", "<cmd>CodexThreads<cr>", desc = "Codex: Resume thread" },
+		{ "<leader>Cn", "<cmd>CodexThreadNew<cr>", desc = "Codex: New thread" },
+		{ "<leader>Cb", "<cmd>CodexCapturePath<cr>", desc = "Codex: Add current file" },
+		{ "<leader>Cs", "<cmd>CodexCaptureSelection<cr>", desc = "Codex: Add selection", mode = "x" },
+		{ "<leader>Cd", "<cmd>CodexCaptureDiagnostic<cr>", desc = "Codex: Add diagnostic" },
+		{ "<leader>Cw", "<cmd>CodexWorkbench<cr>", desc = "Codex: Toggle workbench" },
+		{ "<leader>Cp", "<cmd>CodexCompose<cr>", desc = "Codex: Compose context" },
+		{ "<leader>Cr", "<cmd>CodexRequest<cr>", desc = "Codex: Open pending request" },
+		{ "<leader>Cv", "<cmd>CodexReview<cr>", desc = "Codex: Review changes" },
+		{ "<leader>Cm", "<cmd>CodexThreadSettings<cr>", desc = "Codex: Model and thread settings" },
+		{ "<leader>Ci", "<cmd>CodexInterrupt<cr>", desc = "Codex: Interrupt turn" },
+		{ "<leader>Cq", "<cmd>CodexStop<cr>", desc = "Codex: Stop app-server" },
+	},
+}
