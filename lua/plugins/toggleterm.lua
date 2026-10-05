@@ -51,7 +51,9 @@ return {
 		config = function(_, opts)
 			-- Tớ giữ nguyên biến term_opts và phím tắt của cậu
 			local term_opts = { noremap = true, silent = true, desc = "Bật/tắt terminal" }
-			vim.keymap.set("n", "<leader>t", ":ToggleTerm<CR>", term_opts)
+			vim.keymap.set("n", "<leader>t", function()
+				require("config.worktree_term").toggle()
+			end, term_opts)
 			require("toggleterm").setup(opts)
 
 			-- 🌷 Tùy chọn bổ sung: Thiết lập Keymaps trong Terminal mode 🌷
