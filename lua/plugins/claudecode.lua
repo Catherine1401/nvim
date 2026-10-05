@@ -1,7 +1,11 @@
 return {
 	"coder/claudecode.nvim",
 	dependencies = { "folke/snacks.nvim" },
-	config = true,
+	config = function()
+		-- Phải gắn trước setup vì setup tự khởi động server và ghi lock ngay
+		require("config.claude_lock").setup()
+		require("claudecode").setup({})
+	end,
 	-- Khởi động server ngay để claude chạy ngoài nvim thấy được qua lock file
 	event = "VeryLazy",
 	cmd = {
