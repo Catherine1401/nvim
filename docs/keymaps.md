@@ -65,6 +65,7 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 | `gf` | File history |
 | `gq` | Close diffview |
 | `gz` | Toggle full-file view in diff |
+| `gw` / `gW` | Switch or delete / create worktree |
 
 ### Harpoon (`h`)
 | Keys | Action |
