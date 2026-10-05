@@ -16,11 +16,33 @@ local function toggle_full_diff()
 	end)
 end
 
+-- Chỉ mở diffview khi có thay đổi, tránh kẹt trong giao diện rỗng
+local function open_diffview()
+	local status = vim.fn.systemlist({ "git", "status", "--porcelain" })
+	if vim.v.shell_error ~= 0 then
+		vim.notify("Không phải git repo", vim.log.levels.WARN)
+	elseif #status == 0 then
+		vim.notify("Không có thay đổi để diff", vim.log.levels.INFO)
+	else
+		vim.cmd("DiffviewOpen")
+	end
+end
+
+-- Phím q đóng diffview ở mọi cửa sổ của nó
+local close_keymap = { "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Đóng diffview" } }
+
 return {
 	"sindrets/diffview.nvim",
 	cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
+	opts = {
+		keymaps = {
+			view = { close_keymap },
+			file_panel = { close_keymap },
+			file_history_panel = { close_keymap },
+		},
+	},
 	keys = {
-		{ "<leader>gv", "<cmd>DiffviewOpen<cr>", desc = "Diff toàn bộ thay đổi" },
+		{ "<leader>gv", open_diffview, desc = "Diff toàn bộ thay đổi" },
 		{ "<leader>gf", "<cmd>DiffviewFileHistory %<cr>", desc = "Lịch sử file hiện tại" },
 		{ "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Đóng diffview" },
 		{ "<leader>gz", toggle_full_diff, desc = "Bật/tắt hiện toàn bộ file trong diff" },
