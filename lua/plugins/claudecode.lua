@@ -2,6 +2,8 @@ return {
 	"coder/claudecode.nvim",
 	dependencies = { "folke/snacks.nvim" },
 	config = true,
+	-- Khởi động server ngay để claude chạy ngoài nvim thấy được qua lock file
+	event = "VeryLazy",
 	cmd = {
 		"ClaudeCode",
 		"ClaudeCodeFocus",
