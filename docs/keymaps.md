@@ -11,7 +11,7 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 |---|---|
 | `<leader>w` / `<leader>q` | Save / quit |
 | `<leader><leader>` | Find files |
-| `<leader>e` | File tree |
+| `<leader>e` | Open or focus file tree |
 | `<leader>t` | Toggle terminal |
 | `<C-h/j/k/l>` | Move between windows |
 | `<S-h>` / `<S-l>` | Previous / next buffer |

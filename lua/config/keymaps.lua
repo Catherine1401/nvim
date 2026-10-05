@@ -63,4 +63,4 @@ map("x", "p", [["_dP]], { desc = "Paste không mất clipboard" })
 map("n", "J", "mzJ`z", { desc = "Nối dòng (Giữ vị trí con trỏ)" })
 
 -- tree
-map('n', '<leader>e', '<cmd>Neotree filesystem<CR><cmd>wincmd t<CR>', { silent = true, desc = "Mở cây thư mục" })
+map('n', '<leader>e', '<cmd>Neotree focus filesystem<CR>', { silent = true, desc = "Mở hoặc focus cây thư mục" })
