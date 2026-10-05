@@ -2,6 +2,7 @@
 return {
 	"uga-rosa/ccc.nvim",
 	version = "*",
+	cmd = { "CccPick", "CccConvert", "CccHighlighterToggle" },
 
 	-- 1. Hàm init: Yêu cầu bắt buộc kích hoạt True Color (theo ccc-setup)
 	init = function()
@@ -78,29 +79,4 @@ return {
 			},
 		}
 	end,
-
-	-- 3. Thiết lập Phím Tắt (Keymaps)
-	keys = {
-		-- Mở Picker và tự động dò màu dưới con trỏ
-		{
-			"<leader>cp",
-			"<Cmd>CccPick<CR>",
-			mode = "n",
-			desc = "Open Color Picker (CccPick)",
-		},
-		-- Chuyển đổi format màu nhanh
-		{
-			"<leader>cc",
-			"<Cmd>CccConvert<CR>",
-			mode = "n",
-			desc = "Convert Color Format",
-		},
-		-- Bật/Tắt Highlighter thủ công
-		{
-			"<leader>ct",
-			"<Cmd>CccHighlighterToggle<CR>",
-			mode = "n",
-			desc = "Toggle Color Highlighter",
-		},
-	},
 }

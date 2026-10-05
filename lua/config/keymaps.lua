@@ -10,7 +10,7 @@ local map = vim.keymap.set
 map("n", "<leader>q", "<cmd>q<cr>", { desc = "Thoát Neovim (Quit all)" })
 map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save" })
 -- map('i', '<Esc>', '<Esc><cmd>w<CR>', { desc = "Save when exiting Insert Mode", silent = true })
-map('n', '<C-a>', 'ggVG')
+map('n', '<C-a>', 'ggVG', { desc = "Chọn toàn bộ file" })
 -- map('n', '<C-u', '<C-u>zz')
 -- map('n', '<C-d', '<C-d>zz')
 
@@ -22,19 +22,19 @@ map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Tắt highlight tìm kiếm" 
 -- =======================================================
 
 -- Di chuyển giữa các cửa sổ bằng Ctrl + h/j/k/l (Thay vì Ctrl+w...)
-map("n", "<leader>h", "<C-w>h", { desc = "Qua trái" })
-map("n", "<leader>j", "<C-w>j", { desc = "Xuống dưới" })
-map("n", "<leader>k", "<C-w>k", { desc = "Lên trên" })
-map("n", "<leader>l", "<C-w>l", { desc = "Qua phải" })
+map("n", "<C-h>", "<C-w>h", { desc = "Qua trái" })
+map("n", "<C-j>", "<C-w>j", { desc = "Xuống dưới" })
+map("n", "<C-k>", "<C-w>k", { desc = "Lên trên" })
+map("n", "<C-l>", "<C-w>l", { desc = "Qua phải" })
 
-map('n', '<leader><Right>', ':vsplit<CR>')
-map('n', '<leader><Down>', ':split<CR>')
+map('n', '<leader><Right>', ':vsplit<CR>', { desc = "Chia cửa sổ dọc" })
+map('n', '<leader><Down>', ':split<CR>', { desc = "Chia cửa sổ ngang" })
 
--- Thay đổi kích thước cửa sổ bằng phím mũi tên (Ctrl + Mũi tên)
-map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Tăng chiều cao" })
-map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Giảm chiều cao" })
-map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Giảm chiều rộng" })
-map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Tăng chiều rộng" })
+-- Thay đổi kích thước cửa sổ bằng Alt + h/j/k/l
+map("n", "<A-k>", "<cmd>resize +2<cr>", { desc = "Tăng chiều cao" })
+map("n", "<A-j>", "<cmd>resize -2<cr>", { desc = "Giảm chiều cao" })
+map("n", "<A-h>", "<cmd>vertical resize -2<cr>", { desc = "Giảm chiều rộng" })
+map("n", "<A-l>", "<cmd>vertical resize +2<cr>", { desc = "Tăng chiều rộng" })
 
 -- =======================================================
 -- 3. DI CHUYỂN DÒNG CODE (MOVING LINES) - Cực xịn
@@ -63,7 +63,4 @@ map("x", "p", [["_dP]], { desc = "Paste không mất clipboard" })
 map("n", "J", "mzJ`z", { desc = "Nối dòng (Giữ vị trí con trỏ)" })
 
 -- tree
--- <leader>E chỉ hiện file đã thay đổi (git status), <leader>e hiện cây đầy đủ
-map('n', '<leader>e', '<cmd>Neotree filesystem<CR><cmd>wincmd t<CR>', {silent = true})
-map('n', '<leader>E', '<cmd>Neotree git_status<CR><cmd>wincmd t<CR>', {silent = true})
-map('n', '<leader>p', ':Neotree action=close<CR>', {silent = true})
+map('n', '<leader>e', '<cmd>Neotree filesystem<CR><cmd>wincmd t<CR>', { silent = true, desc = "Mở cây thư mục" })

@@ -50,16 +50,15 @@ return {
 		-- Hàm config (được gọi sau khi plugin được tải)
 		config = function(_, opts)
 			-- Tớ giữ nguyên biến term_opts và phím tắt của cậu
-			local term_opts = { noremap = true, silent = true }
-			vim.keymap.set("n", "<leader>tt", ":ToggleTerm<CR>", term_opts)
+			local term_opts = { noremap = true, silent = true, desc = "Bật/tắt terminal" }
+			vim.keymap.set("n", "<leader>t", ":ToggleTerm<CR>", term_opts)
 			require("toggleterm").setup(opts)
 
 			-- 🌷 Tùy chọn bổ sung: Thiết lập Keymaps trong Terminal mode 🌷
 			function set_terminal_keymaps()
-				local opts = { buffer = 0 }
+				local opts = { buffer = 0, desc = "Thoát terminal mode" }
 				-- Thoát Terminal mode
 				vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], opts) -- Dùng Esc
-				vim.keymap.set("n", "jk", [[<C-w>h]], opts) -- Dùng jk (giống Vim)
 			end
 
 			-- Tự động chạy hàm thiết lập keymaps khi mở một terminal

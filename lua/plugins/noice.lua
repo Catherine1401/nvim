@@ -38,7 +38,6 @@ return {
 		},
 	},
 	keys = {
-		{ "<leader>sn", "", desc = "+noice" },
 		{
 			"<S-Enter>",
 			function()
@@ -46,27 +45,6 @@ return {
 			end,
 			mode = "c",
 			desc = "Redirect Cmdline",
-		},
-		{
-			"<leader>snl",
-			function()
-				require("noice").cmd("last")
-			end,
-			desc = "Noice Last Message",
-		},
-		{
-			"<leader>snh",
-			function()
-				require("noice").cmd("history")
-			end,
-			desc = "Noice History",
-		},
-		{
-			"<leader>snd",
-			function()
-				require("noice").cmd("dismiss")
-			end,
-			desc = "Dismiss All",
 		},
 		{
 			"<c-f>",

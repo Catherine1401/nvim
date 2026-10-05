@@ -44,16 +44,12 @@ return {
 					around = "a",
 					inside = "i",
 
-					-- Next/Last (Nhảy tới đối tượng tiếp theo/trước đó)
-					-- Ví dụ: dan (delete around next)
-					around_next = "an",
-					inside_next = "in",
-					around_last = "al",
-					inside_last = "il",
-
-					-- Di chuyển trỏ (Goto)
-					goto_left = "g[",
-					goto_right = "g]",
+					around_next = "",
+					inside_next = "",
+					around_last = "",
+					inside_last = "",
+					goto_left = "",
+					goto_right = "",
 				},
 			}
 		end,

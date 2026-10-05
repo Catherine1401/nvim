@@ -4,39 +4,18 @@ return {
 		branch = "1.0",
 		-- Chỉ nạp khi dùng phím multicursor lần đầu, vì autocmd SafeState của plugin chạy ở mọi lần gõ phím
 		keys = {
-			{ "<up>", mode = { "n", "x" } },
-			{ "<down>", mode = { "n", "x" } },
-			{ "<M-up>", mode = { "n", "x" } },
-			{ "<M-down>", mode = { "n", "x" } },
-			{ "<leader>n", mode = { "n", "x" } },
-			{ "<leader>,", mode = { "n", "x" } },
-			{ "<leader>N", mode = { "n", "x" } },
-			{ "<leader>S", mode = { "n", "x" } },
-			{ "<c-q>", mode = { "n", "x" } },
-			{ "<leader><c-q>", mode = { "n", "x" } },
-			{ "<leader>m", mode = { "n", "x" } },
-			{ "<leader>mA", mode = { "n", "x" } },
-			{ "g<c-a>", mode = { "n", "x" } },
-			{ "g<c-x>", mode = { "n", "x" } },
-			{ "]d", mode = { "n", "x" } },
-			{ "[d", mode = { "n", "x" } },
-			{ "]s", mode = { "n", "x" } },
-			{ "[S", mode = { "n", "x" } },
-			{ "md", mode = { "n", "x" } },
-			{ "<c-leftmouse>", mode = "n" },
-			{ "ga", mode = "n" },
-			{ "<leader>ma", mode = "n" },
-			{ "<leader>/n", mode = "n" },
-			{ "<leader>/N", mode = "n" },
-			{ "<leader>/s", mode = "n" },
-			{ "<leader>/S", mode = "n" },
-			{ "<leader>/A", mode = "n" },
-			{ "N", mode = "x" },
-			{ "M", mode = "x" },
-			{ "I", mode = "x" },
-			{ "A", mode = "x" },
-			{ "<leader>tr", mode = "x" },
-			{ "<leader>tl", mode = "x" },
+			{ "<up>", mode = { "n", "x" }, desc = "Thêm cursor phía trên" },
+			{ "<down>", mode = { "n", "x" }, desc = "Thêm cursor phía dưới" },
+			{ "<M-up>", mode = { "n", "x" }, desc = "Bỏ qua cursor phía trên" },
+			{ "<M-down>", mode = { "n", "x" }, desc = "Bỏ qua cursor phía dưới" },
+			{ "<leader>n", mode = { "n", "x" }, desc = "Thêm cursor ở match kế tiếp" },
+			{ "<leader>,", mode = { "n", "x" }, desc = "Bỏ qua match kế tiếp" },
+			{ "<leader>N", mode = { "n", "x" }, desc = "Thêm cursor ở match trước" },
+			{ "<leader>S", mode = { "n", "x" }, desc = "Bỏ qua match trước" },
+			{ "<c-q>", mode = { "n", "x" }, desc = "Bật/tắt cursor tại vị trí hiện tại" },
+			{ "<leader>mA", mode = { "n", "x" }, desc = "Thêm cursor ở mọi match" },
+			{ "<c-leftmouse>", mode = "n", desc = "Thêm/xóa cursor bằng chuột" },
+			{ "ga", mode = "n", desc = "Thêm cursor theo operator" },
 		},
 		config = function()
 			local mc = require("multicursor-nvim")
@@ -77,9 +56,9 @@ return {
 			end, { desc = "Skip prev match" })
 
 			-- Thêm/Xóa con trỏ bằng chuột (Mouse)
-			set("n", "<c-leftmouse>", mc.handleMouse)
-			set("n", "<c-leftdrag>", mc.handleMouseDrag)
-			set("n", "<c-leftrelease>", mc.handleMouseRelease)
+			set("n", "<c-leftmouse>", mc.handleMouse, { desc = "Thêm/xóa cursor bằng chuột" })
+			set("n", "<c-leftdrag>", mc.handleMouseDrag, { desc = "Kéo cursor bằng chuột" })
+			set("n", "<c-leftrelease>", mc.handleMouseRelease, { desc = "Thả cursor bằng chuột" })
 
 			-- Tắt/Bật Multicursor (Chỉ di chuyển con trỏ chính)
 			set({ "n", "x" }, "<c-q>", mc.toggleCursor, { desc = "Toggle Multicursor" })
@@ -87,11 +66,11 @@ return {
 			-- Keymap Layer: Chỉ hoạt động khi ĐANG CÓ nhiều con trỏ
 			mc.addKeymapLayer(function(layerSet)
 				-- Chọn con trỏ khác làm con trỏ chính
-				layerSet({ "n", "x" }, "<left>", mc.prevCursor)
-				layerSet({ "n", "x" }, "<right>", mc.nextCursor)
+				layerSet({ "n", "x" }, "<left>", mc.prevCursor, { desc = "Chọn cursor trước" })
+				layerSet({ "n", "x" }, "<right>", mc.nextCursor, { desc = "Chọn cursor kế tiếp" })
 
 				-- Xóa con trỏ chính hiện tại
-				layerSet({ "n", "x" }, "<leader>x", mc.deleteCursor)
+				layerSet({ "n", "x" }, "<leader>x", mc.deleteCursor, { desc = "Xóa cursor chính" })
 
 				-- Phím Esc: Bật lại cursor nếu đang tắt, hoặc xóa hết cursor phụ
 				layerSet("n", "<esc>", function()
@@ -100,7 +79,7 @@ return {
 					else
 						mc.clearCursors()
 					end
-				end)
+				end, { desc = "Bật lại hoặc xóa cursor phụ" })
 			end)
 
 			-- ======================================================================
@@ -110,74 +89,8 @@ return {
 			-- Thêm con trỏ vào mỗi dòng của một đoạn văn (Paragraph)
 			set("n", "ga", mc.addCursorOperator, { desc = "Add cursor operator (gaip)" })
 
-			-- Nhân bản con trỏ hiện tại và vô hiệu hóa con trỏ gốc
-			set({ "n", "x" }, "<leader><c-q>", mc.duplicateCursors, { desc = "Duplicate cursors" })
-
-			-- Căn chỉnh các con trỏ thẳng hàng (Align)
-			set("n", "<leader>ma", mc.alignCursors, { desc = "Align cursors" })
-
-			-- Tách vùng chọn bằng Regex (Split)
-			set("x", "N", mc.splitCursors, { desc = "Split selections (Regex)" })
-
-			-- Tạo con trỏ mới khớp với Regex trong vùng chọn (Match)
-			set("x", "M", mc.matchCursors, { desc = "Match selections (Regex)" })
-
 			-- Thêm con trỏ cho TẤT CẢ các từ khớp trong file (Select All)
 			set({ "n", "x" }, "<leader>mA", mc.matchAllAddCursors, { desc = "Add all matches" })
-
-			-- Xoay nội dung giữa các con trỏ (Transpose)
-			set("x", "<leader>tr", function()
-				mc.transposeCursors(1)
-			end, { desc = "Transpose next" })
-			set("x", "<leader>tl", function()
-				mc.transposeCursors(-1)
-			end, { desc = "Transpose prev" })
-
-			-- Chèn kiểu khối (Block Insertion) trong Visual mode
-			set("x", "I", mc.insertVisual, { desc = "Insert visual" })
-			set("x", "A", mc.appendVisual, { desc = "Append visual" })
-
-			-- Tăng/Giảm số thứ tự (Sequence Increment)
-			set({ "n", "x" }, "g<c-a>", mc.sequenceIncrement, { desc = "Sequence Increment" })
-			set({ "n", "x" }, "g<c-x>", mc.sequenceDecrement, { desc = "Sequence Decrement" })
-
-			-- Tìm kiếm và thêm con trỏ (Search Integration)
-			set("n", "<leader>/n", function()
-				mc.searchAddCursor(1)
-			end, { desc = "Search add next" })
-			set("n", "<leader>/N", function()
-				mc.searchAddCursor(-1)
-			end, { desc = "Search add prev" })
-			set("n", "<leader>/s", function()
-				mc.searchSkipCursor(1)
-			end, { desc = "Search skip next" })
-			set("n", "<leader>/S", function()
-				mc.searchSkipCursor(-1)
-			end, { desc = "Search skip prev" })
-			set("n", "<leader>/A", mc.searchAllAddCursors, { desc = "Search add all" })
-
-			-- Operator tùy chỉnh (Custom Operator)
-			-- VD: <leader>miwap -> Tạo cursor cho mỗi từ trong đoạn văn
-			set({ "n", "x" }, "<leader>m", mc.operator, { desc = "Multicursor Operator" })
-
-			-- Tích hợp với Diagnostics (Lỗi/Cảnh báo)
-			set({ "n", "x" }, "]d", function()
-				mc.diagnosticAddCursor(1)
-			end, { desc = "Add cursor next diagnostic" })
-			set({ "n", "x" }, "[d", function()
-				mc.diagnosticAddCursor(-1)
-			end, { desc = "Add cursor prev diagnostic" })
-			set({ "n", "x" }, "]s", function()
-				mc.diagnosticSkipCursor(1)
-			end, { desc = "Skip cursor next diagnostic" })
-			set({ "n", "x" }, "[S", function()
-				mc.diagnosticSkipCursor(-1)
-			end, { desc = "Skip cursor prev diagnostic" })
-
-			-- Chọn tất cả các lỗi Error trong đoạn (mdip)
-			set({ "n", "x" }, "md", function()
-				mc.diagnosticMatchCursors({ severity = vim.diagnostic.severity.ERROR })
-			end, { desc = "Match diagnostics (Error)" })
 
 			-- ======================================================================
 			-- 3. HIGHLIGHTS (Giao diện)

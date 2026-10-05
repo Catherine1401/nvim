@@ -20,7 +20,7 @@ return {
 	"sindrets/diffview.nvim",
 	cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
 	keys = {
-		{ "<leader>gD", "<cmd>DiffviewOpen<cr>", desc = "Diff toàn bộ thay đổi" },
+		{ "<leader>gv", "<cmd>DiffviewOpen<cr>", desc = "Diff toàn bộ thay đổi" },
 		{ "<leader>gf", "<cmd>DiffviewFileHistory %<cr>", desc = "Lịch sử file hiện tại" },
 		{ "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Đóng diffview" },
 		{ "<leader>gz", toggle_full_diff, desc = "Bật/tắt hiện toàn bộ file trong diff" },

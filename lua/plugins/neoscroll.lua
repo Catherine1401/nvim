@@ -41,7 +41,7 @@ return {
     -- Áp dụng phím tắt cho các chế độ Normal, Visual, Select
     local modes = { 'n', 'v', 'x' }
     for key, func in pairs(keymap) do
-      vim.keymap.set(modes, key, func)
+      vim.keymap.set(modes, key, func, { desc = "Cuộn mượt " .. key })
     end
   end,
 }

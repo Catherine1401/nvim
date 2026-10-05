@@ -36,7 +36,7 @@ return {
 				},
 				mappings = {
 					-- Tớ giữ nguyên toàn bộ phím tắt cậu đã quen dùng
-					["<space>"] = { "toggle_node", nowait = false },
+					["<space>"] = "none", -- Tắt <space> để tránh chờ timeout do trùng tiền tố <leader>
 					["<2-LeftMouse>"] = "open",
 					["<cr>"] = "open",
 					["<esc>"] = "cancel",

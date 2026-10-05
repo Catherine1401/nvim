@@ -61,7 +61,7 @@ return {
 				},
 
 				-- 5. Dev Tools & Log
-				-- Bật để thu log app; mở/tắt bằng <leader>Fl, xóa bằng <leader>Fz.
+				-- Bật để thu log app; mở/tắt bằng <leader>rl, xóa bằng <leader>rz.
 				dev_log = {
 					enabled = true,
 					notify_errors = true, -- sửa lỗi chính tả: nofify_errors -> notify_errors
@@ -120,41 +120,32 @@ return {
 		-- 9. Phím tắt chuyên dụng (Keymaps)
 		keys = {
 			{
-				"<leader>Fs",
+				"<leader>rs",
 				function()
 					require("telescope").extensions.flutter.commands()
 				end,
 				desc = "Flutter Commands",
 			},
 			-- Nhóm lệnh chạy App
-			{ "<leader>Fr", "<cmd>FlutterRun<cr>", desc = "Chạy App (Run)" },
-			{ "<leader>Fg", "<cmd>FlutterDebug<cr>", desc = "Chạy App (Force Debug)" },
-			{ "<leader>Fq", "<cmd>FlutterQuit<cr>", desc = "Tắt App (Quit)" },
-			{ "<leader>FR", "<cmd>FlutterRestart<cr>", desc = "Hot Restart (Toàn bộ)" },
-			{ "<leader>Fh", "<cmd>FlutterReload<cr>", desc = "Hot Reload (Nhanh)" },
-			{ "<leader>Fa", "<cmd>FlutterAttach<cr>", desc = "Attach vào App đang chạy" },
-			{ "<leader>Fx", "<cmd>FlutterDetach<cr>", desc = "Detach (giữ app chạy trên máy)" },
+			{ "<leader>rr", "<cmd>FlutterRun<cr>", desc = "Chạy App (Run)" },
+			{ "<leader>rq", "<cmd>FlutterQuit<cr>", desc = "Tắt App (Quit)" },
+			{ "<leader>rt", "<cmd>FlutterRestart<cr>", desc = "Hot Restart (Toàn bộ)" },
+			{ "<leader>rh", "<cmd>FlutterReload<cr>", desc = "Hot Reload (Nhanh)" },
 
 			-- Nhóm lệnh công cụ
-			{ "<leader>Fd", "<cmd>FlutterDevices<cr>", desc = "Chọn thiết bị (Devices)" },
-			{ "<leader>Fe", "<cmd>FlutterEmulators<cr>", desc = "Chọn máy ảo (Emulators)" },
-			{ "<leader>Fo", "<cmd>FlutterOutlineToggle<cr>", desc = "Bật/Tắt Outline" },
-			{ "<leader>Fu", "<cmd>FlutterOutlineOpen<cr>", desc = "Mở Outline" },
-			{ "<leader>Fl", "<cmd>FlutterLogToggle<cr>", desc = "Bật/Tắt Log" },
-			{ "<leader>Fz", "<cmd>FlutterLogClear<cr>", desc = "Xóa Log" },
-			{ "<leader>Fc", "<cmd>FlutterCopyProfilerUrl<cr>", desc = "Copy Profiler URL" },
+			{ "<leader>rd", "<cmd>FlutterDevices<cr>", desc = "Chọn thiết bị (Devices)" },
+			{ "<leader>re", "<cmd>FlutterEmulators<cr>", desc = "Chọn máy ảo (Emulators)" },
+			{ "<leader>ro", "<cmd>FlutterOutlineToggle<cr>", desc = "Bật/Tắt Outline" },
+			{ "<leader>rl", "<cmd>FlutterLogToggle<cr>", desc = "Bật/Tắt Log" },
+			{ "<leader>rz", "<cmd>FlutterLogClear<cr>", desc = "Xóa Log" },
 
 			-- Nhóm Debug/DevTools
-			{ "<leader>Fv", "<cmd>FlutterVisualDebug<cr>", desc = "Bật/Tắt Visual Debug" },
-			{ "<leader>Fi", "<cmd>FlutterInspectWidget<cr>", desc = "Bật/Tắt Inspect Widget" },
-			{ "<leader>FD", "<cmd>FlutterDevTools<cr>", desc = "Khởi động DevTools Server" },
-			{ "<leader>FO", "<cmd>FlutterOpenDevTools<cr>", desc = "Mở trang DevTools" },
+			{ "<leader>ri", "<cmd>FlutterInspectWidget<cr>", desc = "Bật/Tắt Inspect Widget" },
+			{ "<leader>rw", "<cmd>FlutterOpenDevTools<cr>", desc = "Mở trang DevTools" },
 
 			-- Nhóm LSP & Dart
-			{ "<leader>Fp", "<cmd>FlutterPubGet<cr>", desc = "Chạy pub get" },
-			{ "<leader>Fj", "<cmd>FlutterReanalyze<cr>", desc = "Buộc LSP phân tích lại" },
-			{ "<leader>FL", "<cmd>FlutterLspRestart<cr>", desc = "Khởi động lại Dart LSP" },
-			{ "<leader>Fm", "<cmd>FlutterRename<cr>", desc = "Đổi tên symbol (rename)" },
+			{ "<leader>rp", "<cmd>FlutterPubGet<cr>", desc = "Chạy pub get" },
+			{ "<leader>rm", "<cmd>FlutterRename<cr>", desc = "Đổi tên symbol (rename)" },
 		},
 	},
 }

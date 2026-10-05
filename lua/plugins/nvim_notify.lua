@@ -44,7 +44,7 @@ return {
 	end,
 	keys = {
 		{
-			"<leader>un",
+			"<leader>fn",
 			function()
 				require("telescope").extensions.notify.notify()
 			end,

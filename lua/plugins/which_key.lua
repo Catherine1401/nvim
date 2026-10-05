@@ -42,16 +42,14 @@ return {
 					{ "<leader>c", group = "Code" },
 					{ "<leader>f", group = "File/Find" },
 					{ "<leader>g", group = "Git" },
-					{ "<leader>gh", group = "Git Hunks" }, -- Nhóm con của Git
-					{ "<leader>q", group = "Quit/Session" },
-					{ "<leader>s", group = "Search" },
-					{ "<leader>u", group = "UI" },
-					{ "<leader>t", group = "Terminal" },
-					{ "<leader>w", group = "Windows" },
-					{ "<leader>x", group = "Diagnostics/Quickfix" },
+					{ "<leader>d", group = "Diagnostics" },
+					{ "<leader>h", group = "Harpoon" },
+					{ "<leader>a", group = "AI/Claude Code" },
+					{ "<leader>m", group = "Markdown/Multicursor" },
 
 					-- Nhóm riêng cho Flutter (Cậu là Flutter dev mà)
-					{ "<leader>F", group = "Flutter Tools", icon = " " },
+					{ "<leader>r", group = "Flutter Tools", icon = " " },
+					{ "<leader>o", group = "Codex" },
 				},
 
 				-- Ẩn các phím không cần thiết khỏi menu (cho gọn)

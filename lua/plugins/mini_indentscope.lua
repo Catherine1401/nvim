@@ -14,10 +14,10 @@ return {
 			end,
 		},
 		mappings = {
-			object_scope = "mi",
-			object_scope_with_border = "ma",
-			goto_top = "[i",
-			goto_bottom = "]i",
+			object_scope = "",
+			object_scope_with_border = "",
+			goto_top = "",
+			goto_bottom = "",
 		},
 	},
 	init = function()

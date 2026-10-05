@@ -23,11 +23,8 @@ return {
 
 			-- 2. Các lệnh đóng hàng loạt
 			{ "<leader>bo", "<Cmd>BufferLineCloseOthers<CR>", desc = "Đóng TẤT CẢ trừ tab này" },
-			{ "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Đóng hết bên phải" },
-			{ "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Đóng hết bên trái" },
 
 			-- Các tiện ích khác
-			{ "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Ghim/Bỏ ghim tab" },
 			{ "<leader>bs", "<Cmd>BufferLinePick<CR>", desc = "Chọn nhanh tab (Pick)" },
 		},
 
