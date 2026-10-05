@@ -2,6 +2,8 @@ return {
 	{
 		"nvim-flutter/flutter-tools.nvim",
 		lazy = false, -- Load ngay để tự động nhận diện dự án Flutter
+		-- Thay client VM service của plugin bằng bản tự kết nối lại; phải chạy trước khi plugin require module này
+		init = function() package.loaded["flutter-tools.vm_service"] = require("config.flutter.vm_service") end,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"stevearc/dressing.nvim", -- Giúp menu chọn thiết bị đẹp hơn (UI Select)
@@ -112,6 +114,10 @@ return {
 					},
 				},
 			})
+
+			-- Giữ chế độ chọn widget qua hot restart và tự cuộn log xuống cuối
+			require("config.flutter.inspect").setup()
+			require("config.flutter.log_follow").setup()
 
 			-- Tích hợp với Telescope (nếu cậu dùng Telescope)
 			require("telescope").load_extension("flutter")
