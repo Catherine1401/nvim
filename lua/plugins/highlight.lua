@@ -27,7 +27,6 @@ return {
 				"markdown_inline",
 				"python",
 				"dart", -- Flutter
-				"c_sharp", -- .NET
 			}
 
 			local installed = require("nvim-treesitter").get_installed("parsers")
@@ -62,7 +61,7 @@ return {
 				end,
 			})
 
-			-- indent để tắt (easy-dotnet dùng GetCSIndent riêng), nên không đặt
+			-- indent để tắt, nên không đặt
 			-- indentexpr = v:lua.require'nvim-treesitter'.indentexpr()
 		end,
 	},

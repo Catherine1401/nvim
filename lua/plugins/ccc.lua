@@ -37,7 +37,7 @@ return {
 			highlighter = {
 				auto_enable = true, -- Tự động bật tính năng highlight khi mở buffer
 				lsp = true, -- Dùng LSP để phát hiện màu sắc
-				filetypes = { "css", "scss", "less", "html", "javascript", "typescript", "lua" },
+				filetypes = { "lua" },
 				update_insert = true, -- Cập nhật highlight ngay cả khi đang ở Insert mode
 			},
 

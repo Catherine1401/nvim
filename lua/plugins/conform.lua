@@ -21,17 +21,10 @@ return {
 				-- === LUA ===
 				lua = { "stylua" },
 
-				-- === WEB STACK (HTML, CSS, JS, TS...) ===
-				javascript = { "prettier" },
-				typescript = { "prettier" },
-				javascriptreact = { "prettier" },
-				typescriptreact = { "prettier" },
-				css = { "prettier" },
-				html = { "prettier" },
+				-- === JSON / YAML / MARKDOWN ===
 				json = { "prettier" },
 				yaml = { "prettier" },
 				markdown = { "prettier" },
-				graphql = { "prettier" },
 
 				-- === PYTHON ===
 				-- Chạy tuần tự: Sắp xếp import (isort) -> Format code (black)
@@ -41,18 +34,6 @@ return {
 				-- Dùng clang-format (Chuẩn mực của C/C++)
 				c = { "clang-format" },
 				cpp = { "clang-format" },
-
-				-- === JAVA ===
-				-- Dùng google-java-format (Chuẩn của Google, rất phổ biến)
-				java = { "google-java-format" },
-
-				-- === RUST ===
-				-- Rustfmt là chân ái. Thêm lsp_format = "fallback" để dự phòng.
-				rust = { "rustfmt", lsp_format = "fallback" },
-
-				-- === GO ===
-				-- Chạy tuần tự: Dọn import (goimports) -> Format nghiêm ngặt (gofumpt)
-				go = { "goimports", "gofumpt" },
 
 				-- === SHELL ===
 				sh = { "shfmt" },
