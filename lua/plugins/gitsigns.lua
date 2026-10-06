@@ -6,6 +6,7 @@ return {
 
 		gs.setup({
 			current_line_blame = true,
+			preview_config = { border = "double", style = "minimal", relative = "cursor", row = 0, col = 1 },
 		})
 
 		require("config.diff_blame").setup()

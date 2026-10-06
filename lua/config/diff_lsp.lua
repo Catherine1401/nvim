@@ -4,13 +4,22 @@ local M = {}
 local shadows = {} -- buffer diffview:// đã đổi tên -> true
 local locked = {} -- buffer file thật đã khoá -> { modifiable, readonly }
 
--- Tên file thật + rev từ tên buffer diffview://<root>/.git/<rev>/<path> (rev là hash hoặc :0:)
+-- Tên buffer diffview://<git dir>/<rev>/<path>: rev là :N: (index) hoặc hash 11 ký tự
+local REV_PATTERNS = { ":%d:", string.rep("%x", 11) }
+
+-- Đường dẫn file thật (toplevel của worktree hiện tại + path trong tên) và rev
 local function parse_name(name)
-	local root, rev, path = name:match("^diffview://(.-)/%.git/([^/]+)/(.+)$")
-	if not root then
+	local view = require("diffview.lib").get_current_view()
+	local toplevel = view and view.adapter.ctx.toplevel
+	if not toplevel then
 		return nil
 	end
-	return root .. "/" .. path, rev
+	for _, rev_pattern in ipairs(REV_PATTERNS) do
+		local rev, path = name:match("^diffview://.-/(" .. rev_pattern .. ")/(.+)$")
+		if rev then
+			return toplevel .. "/" .. path, rev
+		end
+	end
 end
 
 -- Tên giả cùng thư mục, khác file thật: <stem>.<rev>.<bufnr>.<ext>
