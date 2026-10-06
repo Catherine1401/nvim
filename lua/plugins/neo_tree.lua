@@ -1,3 +1,35 @@
+-- Nhảy một bước tới kết quả kế tiếp/trước, bỏ qua thư mục cha; trả về false nếu hết kết quả
+local function step_result(state, pad, step)
+	local renderer = require("neo-tree.ui.renderer")
+	local start = state.tree:get_node():get_id()
+	local last = vim.api.nvim_win_get_cursor(state.winid)[1]
+	while true do
+		renderer.focus_node(state, nil, true, step, pad)
+		local line = vim.api.nvim_win_get_cursor(state.winid)[1]
+		local node = state.tree:get_node()
+		if line ~= last and node and node.type ~= "message" and not (node.type == "directory" and node:has_children()) then
+			return true
+		end
+		if line == last then
+			-- Hết kết quả theo hướng này thì giữ nguyên vị trí cũ
+			renderer.focus_node(state, start, true, 0, pad)
+			return false
+		end
+		last = line
+	end
+end
+
+-- Di chuyển tới kết quả kế tiếp/trước, hết kết quả thì vòng sang đầu kia
+local function move_result(step)
+	return function(state, pad)
+		if not step_result(state, pad, step) then
+			while step_result(state, pad, -step) do
+			end
+		end
+		vim.cmd("redraw!")
+	end
+end
+
 return {
 	"nvim-neo-tree/neo-tree.nvim",
 	branch = "v3.x",
@@ -59,6 +91,14 @@ return {
 					["R"] = "refresh",
 					["?"] = "show_help",
 					["Z"] = "expand_all_nodes",
+					-- Gắn nhãn flash ở đầu mọi dòng đang hiện để nhảy thẳng tới node
+					["f"] = function()
+						require("flash").jump({
+							pattern = "^",
+							search = { mode = "search", max_length = 0, multi_window = false },
+							label = { after = { 0, 0 } },
+						})
+					end,
 				},
 			},
 
@@ -67,6 +107,12 @@ return {
 				window = {
 					mappings = {
 						["H"] = "toggle_hidden",
+					},
+					fuzzy_finder_mappings = {
+						["<down>"] = move_result(1),
+						["<C-n>"] = move_result(1),
+						["<up>"] = move_result(-1),
+						["<C-p>"] = move_result(-1),
 					},
 				},
 				filtered_items = {
