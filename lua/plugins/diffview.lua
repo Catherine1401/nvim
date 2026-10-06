@@ -43,8 +43,8 @@ return {
 	end,
 	opts = {
 		hooks = {
-			diff_buf_win_enter = function(bufnr)
-				require("config.diff_lsp").on_buf_enter(bufnr)
+			diff_buf_win_enter = function(bufnr, _, ctx)
+				require("config.diff_lsp").on_buf_enter(bufnr, ctx)
 			end,
 			view_closed = function()
 				require("config.diff_lsp").unlock_all()

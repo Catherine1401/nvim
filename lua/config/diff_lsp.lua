@@ -77,12 +77,19 @@ local function unlock_all()
 	locked = {}
 end
 
+-- Cột kết quả (ký hiệu b) của merge tool ba/bốn cột phải sửa được để chọn ours/theirs
+local function is_merge_result(ctx)
+	return ctx ~= nil and ctx.symbol == "b" and ctx.layout_name:find("^diff[34]") ~= nil
+end
+
 -- Hook diffview: buffer vào cửa sổ diff
-function M.on_buf_enter(buf)
+function M.on_buf_enter(buf, ctx)
 	if vim.api.nvim_buf_get_name(buf):find("^diffview://") then
 		prepare_shadow(buf)
 	end
-	lock(buf)
+	if not is_merge_result(ctx) then
+		lock(buf)
+	end
 end
 
 -- Mở khoá rồi mở file thật để sửa tại dòng đang đứng
