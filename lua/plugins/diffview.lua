@@ -34,6 +34,10 @@ local close_keymap = { "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Đóng diff
 return {
 	"sindrets/diffview.nvim",
 	cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
+	config = function(_, opts)
+		require("diffview").setup(opts)
+		require("config.diff_lsp").setup()
+	end,
 	opts = {
 		keymaps = {
 			view = { close_keymap },
