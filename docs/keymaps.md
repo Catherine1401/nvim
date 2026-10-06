@@ -115,7 +115,6 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 | Keys | Action |
 |---|---|
 | `mA` | Multicursor: add all matches |
-| `mp` | Markdown preview (markdown files only) |
 
 ## Without leader
 
