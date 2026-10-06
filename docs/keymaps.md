@@ -135,6 +135,7 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 | `<C-u>` `<C-d>` | Half-page scroll (smooth) |
 | `<C-b>` `<C-f>` | Page scroll (smooth) |
 | `<C-y>` `<C-e>` | Line scroll (smooth) |
+| `zh` `zl` / `zH` `zL` | Horizontal scroll 10% / half window width (smooth; a count scrolls that many columns) |
 | `zt` `zz` `zb` | Align cursor line to top / center / bottom |
 | `[c` | Jump to parent treesitter context |
 | `gd` `gD` `gi` `K` | LSP definition / declaration / implementation / hover |

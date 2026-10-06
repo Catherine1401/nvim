@@ -3,6 +3,7 @@ return {
   event = "VeryLazy",
   config = function()
     local neoscroll = require("neoscroll")
+    local hscroll = require("config.hscroll")
 
     -- 1. Cấu hình cơ bản (Setup)
     neoscroll.setup({
@@ -31,6 +32,12 @@ return {
       -- Ctrl + y / e (Từng dòng): 100ms - cực nhanh
       ["<C-y>"] = function() neoscroll.scroll(-0.1, { move_cursor = false, duration = 100 }) end,
       ["<C-e>"] = function() neoscroll.scroll(0.1, { move_cursor = false, duration = 100 }) end,
+
+      -- zh / zl (10% chiều rộng) và zH / zL (nửa chiều rộng): cuộn ngang tương ứng <C-y>/<C-e> và <C-u>/<C-d>
+      ["zh"]    = function() hscroll.by_width(0.1, -1, 100) end,
+      ["zl"]    = function() hscroll.by_width(0.1, 1, 100) end,
+      ["zH"]    = function() hscroll.by_width(0.5, -1, 250) end,
+      ["zL"]    = function() hscroll.by_width(0.5, 1, 250) end,
 
       -- zt, zz, zb (Căn chỉnh màn hình): 250ms
       ["zt"]    = function() neoscroll.zt({ half_win_duration = 250 }) end,
