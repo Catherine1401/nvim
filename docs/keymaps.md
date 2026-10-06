@@ -61,6 +61,7 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 | `ga` / `gr` | Stage / reset hunk |
 | `gn` / `gp` | Next / previous hunk |
 | `gd` | Diff current file |
+| `gb` | Blame current line in a float (works on both diffview sides) |
 | `gv` | Diffview (all changes) |
 | `gf` | File history |
 | `gq` | Close diffview |

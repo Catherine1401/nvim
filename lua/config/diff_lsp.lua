@@ -42,6 +42,7 @@ local function prepare_shadow(buf)
 		return
 	end
 	shadows[buf] = true
+	vim.b[buf].diff_origin = { path = path, rev = rev }
 	vim.api.nvim_buf_set_name(buf, shadow_name(path, rev, buf))
 	-- nowrite để nvim không coi buffer đã đổi tên là có thay đổi cần ghi (tránh E445 khi đóng)
 	vim.bo[buf].buftype = "nowrite"
