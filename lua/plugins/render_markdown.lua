@@ -5,7 +5,14 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		"nvim-tree/nvim-web-devicons",
 	},
+	keys = {
+		{ "<leader>mr", "<cmd>RenderMarkdown buf_toggle<cr>", ft = "markdown", desc = "Bật/tắt xem Markdown đã render" },
+	},
 	opts = {
+		-- Mặc định xem raw; chỉ render khi tự bật bằng <leader>mr, và giữ nguyên ở mọi mode
+		enabled = false,
+		render_modes = true,
+
 		heading = {
 			sign = false,
 			icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
@@ -72,8 +79,9 @@ return {
 			},
 		},
 
+		-- Không tự trả dòng con trỏ về raw: hai chế độ xem tách biệt hoàn toàn
 		anti_conceal = {
-			enabled = true,
+			enabled = false,
 		},
 	},
 }
