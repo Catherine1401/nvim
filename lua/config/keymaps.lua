@@ -33,8 +33,8 @@ map('n', '<leader><Down>', ':split<CR>', { desc = "Chia cửa sổ ngang" })
 -- Thay đổi kích thước cửa sổ bằng Alt + h/j/k/l
 map("n", "<A-k>", "<cmd>resize +2<cr>", { desc = "Tăng chiều cao" })
 map("n", "<A-j>", "<cmd>resize -2<cr>", { desc = "Giảm chiều cao" })
-map("n", "<A-h>", "<cmd>vertical resize -2<cr>", { desc = "Giảm chiều rộng" })
-map("n", "<A-l>", "<cmd>vertical resize +2<cr>", { desc = "Tăng chiều rộng" })
+map("n", "<A-h>", "<cmd>vertical resize +2<cr>", { desc = "Tăng chiều rộng" })
+map("n", "<A-l>", "<cmd>vertical resize -2<cr>", { desc = "Giảm chiều rộng" })
 
 -- =======================================================
 -- 3. DI CHUYỂN DÒNG CODE (MOVING LINES) - Cực xịn

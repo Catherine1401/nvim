@@ -123,7 +123,7 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 | Keys | Action |
 |---|---|
 | `<C-h/j/k/l>` | Move to left / down / up / right window |
-| `<A-h/j/k/l>` | Resize: narrower / shorter / taller / wider |
+| `<A-h/j/k/l>` | Resize: wider / shorter / taller / narrower |
 | `<leader><Right>` / `<leader><Down>` | Vertical / horizontal split |
 
 ### Motion
