@@ -4,7 +4,7 @@ local M = {}
 local TICK_MS = 8 -- nhịp cập nhật; mỗi nhịp đi bù đủ số cột theo thời gian đã trôi
 
 local timer = vim.uv.new_timer()
-local scroll = { total = 0, done = 0, duration = 0, started = 0, cursorline = nil }
+local scroll = { total = 0, done = 0, duration = 0, started = 0, offset = 0, cursorline = nil }
 
 local function now_ms()
 	return vim.uv.hrtime() / 1e6
@@ -42,6 +42,8 @@ step = function()
 		pcall(vim.cmd.normal, { args = { math.abs(delta) .. (delta > 0 and "zl" or "zh") }, bang = true })
 		local moved = vim.fn.winsaveview().leftcol - before
 		scroll.done = scroll.done + moved
+		-- Giữ con trỏ ở cùng cột trên màn hình để nó đi cùng hiệu ứng cuộn
+		pcall(vim.cmd.normal, { args = { (vim.fn.winsaveview().leftcol + scroll.offset + 1) .. "|" }, bang = true })
 		-- Không dịch được đủ (hết dòng hoặc về mép trái) thì dừng, như stop_eof của neoscroll
 		if math.abs(moved) < math.abs(delta) then
 			return finish()
@@ -62,6 +64,11 @@ function M.scroll(cols, duration)
 		scroll.cursorline = vim.wo.cursorline
 		vim.wo.cursorline = false
 	end
+	-- Cột màn hình của con trỏ, giới hạn trong vùng không bị sidescrolloff đẩy lại
+	local view = vim.fn.winsaveview()
+	local text_width = vim.api.nvim_win_get_width(0) - vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff
+	local margin = vim.wo.sidescrolloff >= 0 and vim.wo.sidescrolloff or vim.o.sidescrolloff
+	scroll.offset = math.max(margin, math.min(view.curswant - view.leftcol, text_width - margin - 1))
 	scroll.total = cols + scroll.total - scroll.done
 	scroll.done = 0
 	scroll.duration = duration
