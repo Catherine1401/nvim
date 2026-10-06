@@ -77,6 +77,8 @@ return {
 				require("config.diff_lsp").unlock_all()
 			end,
 		},
+		-- Merge tool: ours và theirs chia đôi ở trên, file kết quả nằm riêng ở dưới
+		view = { merge_tool = { layout = "diff3_mixed" } },
 		keymaps = {
 			view = { close_keymap, edit_keymap },
 			file_panel = { close_keymap, edit_keymap },
