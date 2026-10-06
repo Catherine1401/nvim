@@ -58,6 +58,17 @@ end
 -- Phím q đóng diffview ở mọi cửa sổ của nó
 local close_keymap = { "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Đóng diffview" } }
 
+-- Chọn ours/theirs/base/cả ba/xoá cho khối xung đột, có báo khi con trỏ chưa ở trong khối
+local function choose_keymaps()
+	local keys = { co = "ours", ct = "theirs", cb = "base", ca = "all", dx = "none" }
+	local maps = {}
+	for key, target in pairs(keys) do
+		local lhs = key:sub(1, 1) == "c" and "<leader>" .. key or key
+		maps[#maps + 1] = { "n", lhs, function() require("config.diff_conflict").choose(target)() end, { desc = "Chọn " .. target .. " cho khối xung đột" } }
+	end
+	return maps
+end
+
 -- Diffview chỉ đọc; gf mở khoá file thật rồi nhảy tới dòng đang đứng để sửa
 local edit_keymap = { "n", "gf", function() require("config.diff_lsp").goto_edit() end, { desc = "Mở file thật để sửa" } }
 
@@ -80,7 +91,7 @@ return {
 		-- Merge tool: ours và theirs chia đôi ở trên, file kết quả nằm riêng ở dưới
 		view = { merge_tool = { layout = "diff3_mixed" } },
 		keymaps = {
-			view = { close_keymap, edit_keymap },
+			view = vim.list_extend({ close_keymap, edit_keymap }, choose_keymaps()),
 			file_panel = { close_keymap, edit_keymap },
 			file_history_panel = { close_keymap, edit_keymap },
 		},
