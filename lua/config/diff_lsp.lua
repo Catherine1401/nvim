@@ -1,107 +1,104 @@
--- Buffer diffview:// không có LSP (server chỉ nhận file://), nên gd/gD/gi/K gửi tới file thật cùng đường dẫn
+-- Diffview: buffer diffview:// mượn tên file anh em trong project để LSP thật gắn vào, và mọi buffer diff chỉ đọc
 local M = {}
 
-local HOVER = "textDocument/hover"
-local KEYS = {
-  gd = { method = "textDocument/definition", desc = "Go to definition (file thật)" },
-  gD = { method = "textDocument/declaration", desc = "Go to declaration (file thật)" },
-  gi = { method = "textDocument/implementation", desc = "Go to implementation (file thật)" },
-  K = { method = HOVER, desc = "Hover Info (file thật)" },
-}
+local shadows = {} -- buffer diffview:// đã đổi tên -> true
+local locked = {} -- buffer file thật đã khoá -> { modifiable, readonly }
 
--- Đường dẫn file thật từ tên buffer diffview://<root>/.git/<rev>:/<path>
-local function real_path(name)
-  local root, path = name:match("^diffview://(.-)/%.git/[^/]*:/(.+)$")
-  return root and (root .. "/" .. path) or nil
+-- Tên file thật + rev từ tên buffer diffview://<root>/.git/<rev>/<path> (rev là hash hoặc :0:)
+local function parse_name(name)
+	local root, rev, path = name:match("^diffview://(.-)/%.git/([^/]+)/(.+)$")
+	if not root then
+		return nil
+	end
+	return root .. "/" .. path, rev
 end
 
--- Ánh xạ số dòng bản cũ sang bản hiện tại, nil nếu dòng đã bị xoá
-local function map_line(old_lines, new_lines, line)
-  local hunks = vim.diff(table.concat(old_lines, "\n") .. "\n", table.concat(new_lines, "\n") .. "\n", { result_type = "indices" })
-  local offset = 0
-  for _, h in ipairs(hunks) do
-    local start_a, count_a, start_b, count_b = unpack(h)
-    local first = count_a > 0 and start_a or start_a + 1
-    if line < first then break end
-    if count_a > 0 and line < start_a + count_a then
-      if count_b == 0 then return nil end
-      return math.min(start_b + (line - start_a), start_b + count_b - 1)
-    end
-    offset = offset + count_b - count_a
-  end
-  return line + offset
+-- Tên giả cùng thư mục, khác file thật: <stem>.<rev>.<bufnr>.<ext>
+local function shadow_name(path, rev, buf)
+	local dir, base = vim.fs.dirname(path), vim.fs.basename(path)
+	local stem, ext = base:match("^(.*)(%.[^.]*)$")
+	return string.format("%s/%s.%s.%d%s", dir, stem or base, (rev:gsub("%W", "_")), buf, ext or "")
 end
 
--- Lấy kết quả đầu tiên không rỗng từ các LSP client
-local function first_result(results)
-  for client_id, res in pairs(results) do
-    if res.result and not vim.tbl_isempty(res.result) then return client_id, res.result end
-  end
+-- Client đang chạy cho cùng filetype và root bao phủ file thì gắn vào buffer
+local function attach_clients(buf)
+	local path, ft = vim.api.nvim_buf_get_name(buf), vim.bo[buf].filetype
+	for _, client in ipairs(vim.lsp.get_clients()) do
+		local root = client.root_dir
+		if root and vim.startswith(path, root .. "/") and #vim.lsp.get_clients({ bufnr = buf, id = client.id }) == 0 then
+			for other in pairs(client.attached_buffers) do
+				if not shadows[other] and vim.api.nvim_buf_is_valid(other) and vim.bo[other].filetype == ft then
+					vim.lsp.buf_attach_client(buf, client.id)
+					break
+				end
+			end
+		end
+	end
 end
 
--- Nhảy tới vị trí đơn, nhiều vị trí thì đưa vào quickfix
-local function show_locations(client_id, result)
-  local locations = (result.uri or result.targetUri) and { result } or result
-  local encoding = vim.lsp.get_client_by_id(client_id).offset_encoding
-  if #locations == 1 then
-    vim.lsp.util.show_document(locations[1], encoding, { reuse_win = true, focus = true })
-    return
-  end
-  vim.fn.setqflist({}, " ", { title = "LSP", items = vim.lsp.util.locations_to_items(locations, encoding) })
-  vim.cmd("copen")
+local function prepare_shadow(buf)
+	local path, rev = parse_name(vim.api.nvim_buf_get_name(buf))
+	if not path then
+		return
+	end
+	shadows[buf] = true
+	vim.api.nvim_buf_set_name(buf, shadow_name(path, rev, buf))
+	-- nowrite để nvim không coi buffer đã đổi tên là có thay đổi cần ghi (tránh E445 khi đóng)
+	vim.bo[buf].buftype = "nowrite"
+	attach_clients(buf)
 end
 
-local function request(method)
-  local buf = vim.api.nvim_get_current_buf()
-  local path = real_path(vim.api.nvim_buf_get_name(buf))
-  if not path or vim.fn.filereadable(path) == 0 then
-    vim.notify("File thật không còn trong worktree", vim.log.levels.WARN)
-    return
-  end
-  local real = vim.fn.bufadd(path)
-  vim.fn.bufload(real)
-  local row = map_line(
-    vim.api.nvim_buf_get_lines(buf, 0, -1, false),
-    vim.api.nvim_buf_get_lines(real, 0, -1, false),
-    vim.api.nvim_win_get_cursor(0)[1]
-  )
-  if not row then
-    vim.notify("Dòng này đã bị xoá khỏi bản hiện tại", vim.log.levels.INFO)
-    return
-  end
-  local function params(client)
-    local p = vim.lsp.util.make_position_params(0, client.offset_encoding)
-    p.textDocument.uri = vim.uri_from_bufnr(real)
-    p.position.line = row - 1
-    return p
-  end
-  vim.lsp.buf_request_all(real, method, params, function(results)
-    local client_id, result = first_result(results)
-    if not client_id then
-      vim.notify("Không có kết quả LSP", vim.log.levels.INFO)
-      return
-    end
-    if method == HOVER then
-      vim.lsp.util.open_floating_preview(vim.lsp.util.convert_input_to_markdown_lines(result.contents), "markdown", { focus_id = HOVER })
-    else
-      show_locations(client_id, result)
-    end
-  end)
+-- Khoá buffer: file thật nhớ lại trạng thái cũ để mở khoá khi cần sửa
+local function lock(buf)
+	if not shadows[buf] and not locked[buf] and vim.bo[buf].buftype == "" then
+		locked[buf] = { modifiable = vim.bo[buf].modifiable, readonly = vim.bo[buf].readonly }
+	end
+	vim.bo[buf].modifiable = false
+	vim.bo[buf].readonly = true
 end
 
--- Chỉ gắn proxy khi buffer chưa có LSP client; client attach sau sẽ ghi đè bằng keymap LSP thường
-local function map_proxy(buf)
-  if not real_path(vim.api.nvim_buf_get_name(buf)) or #vim.lsp.get_clients({ bufnr = buf }) > 0 then return end
-  for lhs, key in pairs(KEYS) do
-    vim.keymap.set("n", lhs, function() request(key.method) end, { buffer = buf, desc = key.desc })
-  end
+local function unlock_all()
+	for buf, state in pairs(locked) do
+		if vim.api.nvim_buf_is_valid(buf) then
+			vim.bo[buf].modifiable = state.modifiable
+			vim.bo[buf].readonly = state.readonly
+		end
+	end
+	locked = {}
+end
+
+-- Hook diffview: buffer vào cửa sổ diff
+function M.on_buf_enter(buf)
+	if vim.api.nvim_buf_get_name(buf):find("^diffview://") then
+		prepare_shadow(buf)
+	end
+	lock(buf)
+end
+
+-- Mở khoá rồi mở file thật để sửa tại dòng đang đứng
+function M.goto_edit()
+	unlock_all()
+	require("diffview.actions").goto_file_edit()
 end
 
 function M.setup()
-  vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = "diffview://*",
-    callback = function(ev) map_proxy(ev.buf) end,
-  })
+	vim.api.nvim_create_autocmd("LspAttach", {
+		callback = function()
+			for buf in pairs(shadows) do
+				if vim.api.nvim_buf_is_valid(buf) then
+					attach_clients(buf)
+				end
+			end
+		end,
+	})
+	vim.api.nvim_create_autocmd("BufWipeout", {
+		callback = function(ev)
+			shadows[ev.buf] = nil
+			locked[ev.buf] = nil
+		end,
+	})
 end
+
+M.unlock_all = unlock_all
 
 return M

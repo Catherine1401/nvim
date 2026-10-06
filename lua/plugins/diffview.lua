@@ -31,6 +31,9 @@ end
 -- Phím q đóng diffview ở mọi cửa sổ của nó
 local close_keymap = { "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Đóng diffview" } }
 
+-- Diffview chỉ đọc; gf mở khoá file thật rồi nhảy tới dòng đang đứng để sửa
+local edit_keymap = { "n", "gf", function() require("config.diff_lsp").goto_edit() end, { desc = "Mở file thật để sửa" } }
+
 return {
 	"sindrets/diffview.nvim",
 	cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
@@ -39,10 +42,18 @@ return {
 		require("config.diff_lsp").setup()
 	end,
 	opts = {
+		hooks = {
+			diff_buf_win_enter = function(bufnr)
+				require("config.diff_lsp").on_buf_enter(bufnr)
+			end,
+			view_closed = function()
+				require("config.diff_lsp").unlock_all()
+			end,
+		},
 		keymaps = {
-			view = { close_keymap },
-			file_panel = { close_keymap },
-			file_history_panel = { close_keymap },
+			view = { close_keymap, edit_keymap },
+			file_panel = { close_keymap, edit_keymap },
+			file_history_panel = { close_keymap, edit_keymap },
 		},
 	},
 	keys = {

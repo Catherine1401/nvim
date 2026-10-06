@@ -190,6 +190,6 @@ While several cursors exist:
 
 - Marks use the default `marks.nvim` mappings (`m` plus a key, `dm` plus a key).
 - `gc`, `gb`, `ys` and `yS` are operators and always wait for the next key.
-- In `diffview://` buffers without an LSP client (e.g. Dart), `gd` `gD` `gi` `K` are proxied to the real file in the working tree (`lua/config/diff_lsp.lua`); results always point to current code, and deleted lines report a notice.
+- Diffview buffers are read-only. The old-revision side is renamed to a sibling path (`lua/config/diff_lsp.lua`) so running LSP clients attach and all LSP keymaps work there. `gf` in diffview unlocks the real file and opens it at the cursor line for editing.
 - To check conflicts after changing keymaps, load all plugins in headless Neovim, dump
   `nvim_get_keymap` for each mode, and look for duplicate or prefix-overlapping `lhs`.
