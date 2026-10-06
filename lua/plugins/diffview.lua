@@ -28,6 +28,33 @@ local function open_diffview()
 	end
 end
 
+-- Chỉ mở giao diện giải quyết xung đột khi còn file chưa merge
+local function open_conflicts()
+	local unmerged = vim.fn.systemlist({ "git", "diff", "--name-only", "--diff-filter=U" })
+	if vim.v.shell_error ~= 0 then
+		vim.notify("Không phải git repo", vim.log.levels.WARN)
+	elseif #unmerged == 0 then
+		vim.notify("Không có xung đột để giải quyết", vim.log.levels.INFO)
+	else
+		-- Mở xong thì nhảy thẳng tới file xung đột đầu tiên thay vì file đầu danh sách
+		vim.api.nvim_create_autocmd("User", {
+			pattern = "DiffviewViewOpened",
+			once = true,
+			callback = function()
+				-- Chờ diffview chọn xong file mặc định rồi mới đổi sang file xung đột
+				vim.defer_fn(function()
+					local view = require("diffview.lib").get_current_view()
+					local first = view and view.files.conflicting[1]
+					if first then
+						view:set_file(first, true, true)
+					end
+				end, 300)
+			end,
+		})
+		vim.cmd("DiffviewOpen")
+	end
+end
+
 -- Phím q đóng diffview ở mọi cửa sổ của nó
 local close_keymap = { "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Đóng diffview" } }
 
@@ -58,6 +85,7 @@ return {
 	},
 	keys = {
 		{ "<leader>gv", open_diffview, desc = "Diff toàn bộ thay đổi" },
+		{ "<leader>gx", open_conflicts, desc = "Giải quyết xung đột merge" },
 		{ "<leader>gf", "<cmd>DiffviewFileHistory %<cr>", desc = "Lịch sử file hiện tại" },
 		{ "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Đóng diffview" },
 		{ "<leader>gz", toggle_full_diff, desc = "Bật/tắt hiện toàn bộ file trong diff" },

@@ -63,6 +63,7 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 | `gd` | Diff current file |
 | `gb` | Blame current line in a float (works on both diffview sides) |
 | `gv` | Diffview (all changes) |
+| `gx` | Resolve merge conflicts (Diffview 3-way, only when conflicts exist) |
 | `gf` | File history |
 | `gq` | Close diffview |
 | `gz` | Toggle full-file view in diff |
