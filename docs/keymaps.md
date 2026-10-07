@@ -30,6 +30,18 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 | `fh` | Help tags |
 | `fk` | Keymaps |
 | `ft` | Colorscheme |
+
+To search only some folders of a project, put a whitelist `.ignore` file at its root (ripgrep reads it with higher priority than `.gitignore`, so `<leader><leader>`, `fw` and `fc` follow it; so does any other `rg` run in that folder):
+
+```
+/*
+!/lib/
+!/docs/
+!/.docs/
+!/.docs/**
+```
+
+`/*` hides everything at the root and each `!/folder/` brings one back. Add `!/folder/**` as well when `.gitignore` only excludes a subfolder of it (like `.docs/learn/`).
 | `fn` | Notification history |
 
 ### Buffer (`b`)
