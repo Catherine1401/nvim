@@ -18,6 +18,19 @@ local function restore(session, body)
   session:request("callService", { method = EXT, params = { enabled = "true", isolateId = body.isolateId } }, function() end)
 end
 
+-- Bật/tắt chế độ chọn widget trên isolate giao diện, đảo theo trạng thái thật của app
+function M.toggle()
+  local session = require("dap").session()
+  if not session then return vim.notify("Flutter inspector: chưa có app đang chạy qua DAP", vim.log.levels.WARN) end
+  require("config.flutter.isolate").ui(session, function(isolate_id)
+    if not isolate_id then return vim.notify("Flutter inspector: không tìm thấy isolate giao diện", vim.log.levels.WARN) end
+    session:request("callService", { method = EXT, params = { isolateId = isolate_id } }, function(err, response)
+      local enabled = not err and response and (response.result or response).enabled == "true"
+      session:request("callService", { method = EXT, params = { enabled = tostring(not enabled), isolateId = isolate_id } }, function() end)
+    end)
+  end)
+end
+
 function M.setup()
   local KEY = "config.flutter.inspect"
   local dap = require("dap")

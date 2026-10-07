@@ -151,7 +151,7 @@ return {
 			{ "<leader>rz", "<cmd>FlutterLogClear<cr>", desc = "Xóa Log" },
 
 			-- Nhóm Debug/DevTools
-			{ "<leader>ri", "<cmd>FlutterInspectWidget<cr>", desc = "Bật/Tắt Inspect Widget" },
+			{ "<leader>ri", function() require("config.flutter.inspect").toggle() end, desc = "Bật/Tắt Inspect Widget" },
 			{ "<leader>rw", "<cmd>FlutterOpenDevTools<cr>", desc = "Mở trang DevTools" },
 
 			-- Nhóm LSP & Dart
