@@ -123,6 +123,7 @@ return {
 			-- Giữ chế độ chọn widget qua hot restart và tự cuộn log xuống cuối
 			require("config.flutter.inspect").setup()
 			require("config.flutter.log_follow").setup()
+			require("config.flutter.tree").setup()
 
 			-- Tích hợp với Telescope (nếu cậu dùng Telescope)
 			require("telescope").load_extension("flutter")
@@ -153,6 +154,7 @@ return {
 			-- Nhóm Debug/DevTools
 			{ "<leader>ri", function() require("config.flutter.inspect").toggle() end, desc = "Bật/Tắt Inspect Widget" },
 			{ "<leader>rw", "<cmd>FlutterOpenDevTools<cr>", desc = "Mở trang DevTools" },
+			{ "<leader>rg", function() require("config.flutter.tree").open() end, desc = "Cây widget toàn app" },
 
 			-- Nhóm LSP & Dart
 			{ "<leader>rp", "<cmd>FlutterPubGet<cr>", desc = "Chạy pub get" },
