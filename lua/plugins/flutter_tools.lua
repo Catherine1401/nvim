@@ -115,6 +115,11 @@ return {
 				},
 			})
 
+			-- Plugin chỉ đăng ký lệnh Flutter* khi mở file dart/pubspec; cwd là project Flutter thì kích hoạt ngay
+			if vim.uv.fs_stat(vim.fn.getcwd() .. "/pubspec.yaml") then
+				vim.api.nvim_exec_autocmds("BufEnter", { group = "FlutterToolsGroup", pattern = "pubspec.yaml" })
+			end
+
 			-- Giữ chế độ chọn widget qua hot restart và tự cuộn log xuống cuối
 			require("config.flutter.inspect").setup()
 			require("config.flutter.log_follow").setup()
