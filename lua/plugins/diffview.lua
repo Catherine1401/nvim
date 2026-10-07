@@ -84,6 +84,12 @@ return {
 			diff_buf_win_enter = function(bufnr, _, ctx)
 				require("config.diff_lsp").on_buf_enter(bufnr, ctx)
 			end,
+			-- Chạy ngay trước :tabclose của diffview: buffer đã sửa không được phép ẩn sẽ làm :tabclose báo E445
+			view_leave = function(view)
+				if view.tabpage and vim.api.nvim_tabpage_is_valid(view.tabpage) then
+					require("config.diff_close").release(view.tabpage)
+				end
+			end,
 			view_closed = function()
 				require("config.diff_lsp").unlock_all()
 			end,
