@@ -10,7 +10,7 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 | Keys | Action |
 |---|---|
 | `<leader>w` / `<leader>q` | Save / quit |
-| `<leader><leader>` | Find files |
+| `<leader><leader>` | Find files (most recently used first) |
 | `<leader>e` | Open or focus file tree |
 | `<leader>t` | Toggle terminal |
 | `<C-h/j/k/l>` | Move between windows |
@@ -22,8 +22,8 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 ### Find (`f`)
 | Keys | Action |
 |---|---|
-| `<leader><leader>` | Files |
-| `fw` | Live grep |
+| `<leader><leader>` | Files (frecency) |
+| `fw` | Live grep (recently used files first) |
 | `fb` | Buffers |
 | `fo` | Recent files |
 | `fc` | Grep word under cursor |

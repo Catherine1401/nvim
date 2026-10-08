@@ -151,8 +151,7 @@ return {
 		-- 5. PHÍM TẮT (KEYMAPS)
 		keys = {
 			-- Tìm kiếm cơ bản
-			{ "<leader><leader>", "<cmd>Telescope find_files<cr>", desc = "Tìm file (Files)" },
-			{ "<leader>fw", "<cmd>Telescope live_grep<cr>", desc = "Tìm chữ (Word)" },
+			{ "<leader>fw", function() require("config.grep_recent").live_grep() end, desc = "Tìm chữ (Word)" },
 			{ "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Danh sách Buffer" },
 			{ "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Tìm trợ giúp (Help)" },
 			{ "<leader>fo", "<cmd>Telescope oldfiles<cr>", desc = "File mở gần đây" },
