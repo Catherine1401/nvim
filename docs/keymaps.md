@@ -9,7 +9,7 @@ Press `<leader>?` to see buffer-local keymaps, or `<leader>fk` to search every k
 
 | Keys | Action |
 |---|---|
-| `<leader>w` / `<leader>q` | Save / quit |
+| `<leader>w` / `<leader>q` | Save / quit all |
 | `<leader><leader>` | Find files (most recently used first) |
 | `<leader>e` | Open or focus file tree |
 | `<leader>t` | Toggle terminal |

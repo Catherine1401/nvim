@@ -7,7 +7,7 @@ local map = vim.keymap.set
 -- =======================================================
 
 -- Thoát nhanh (Quit)
-map("n", "<leader>q", "<cmd>q<cr>", { desc = "Thoát Neovim (Quit all)" })
+map("n", "<leader>q", "<cmd>qa<cr>", { desc = "Thoát Neovim (Quit all)" })
 map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save" })
 -- map('i', '<Esc>', '<Esc><cmd>w<CR>', { desc = "Save when exiting Insert Mode", silent = true })
 map('n', '<C-a>', 'ggVG', { desc = "Chọn toàn bộ file" })
