@@ -67,6 +67,27 @@ local function lock(buf)
 	vim.bo[buf].readonly = true
 end
 
+-- Phím LSP là buffer-local nên diffview xoá mất khi rời đi; chạy lại đúng nhóm autocmd đặt phím LSP
+local function restore_lsp_keymaps(buf)
+	if #vim.lsp.get_clients({ bufnr = buf }) > 0 then
+		pcall(vim.api.nvim_exec_autocmds, "LspAttach", { group = "UserLspConfig", buffer = buf })
+	end
+end
+
+-- Buffer file thật dùng chung với tab sửa: chỉ khoá khi đứng ở tab diffview, tab khác trả trạng thái cũ
+local function sync_lock()
+	local in_view = require("diffview.lib").get_current_view() ~= nil
+	for buf, state in pairs(locked) do
+		if vim.api.nvim_buf_is_valid(buf) then
+			vim.bo[buf].modifiable = not in_view and state.modifiable
+			vim.bo[buf].readonly = in_view or state.readonly
+			if not in_view then
+				restore_lsp_keymaps(buf)
+			end
+		end
+	end
+end
+
 local function unlock_all()
 	for buf, state in pairs(locked) do
 		if vim.api.nvim_buf_is_valid(buf) then
@@ -92,10 +113,13 @@ function M.on_buf_enter(buf, ctx)
 	end
 end
 
--- Mở khoá rồi mở file thật để sửa tại dòng đang đứng
+-- Mở file thật để sửa tại dòng đang đứng; Ctrl-o ở đó quay lại đúng chỗ này
 function M.goto_edit()
-	unlock_all()
+	local back = require("config.diff_return")
+	back.mark_origin()
 	require("diffview.actions").goto_file_edit()
+	sync_lock()
+	back.mark_arrival()
 end
 
 function M.setup()
@@ -108,6 +132,7 @@ function M.setup()
 			end
 		end,
 	})
+	vim.api.nvim_create_autocmd("TabEnter", { callback = sync_lock })
 	vim.api.nvim_create_autocmd("BufWipeout", {
 		callback = function(ev)
 			shadows[ev.buf] = nil

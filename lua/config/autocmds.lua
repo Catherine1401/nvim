@@ -189,3 +189,5 @@ vim.diagnostic.config({
 
 -- vim.keymap.set('n', '<leader>dt', toggle_visual_diagnostics, { desc = 'Toggle Virtual Text Diagnostics' })
 
+-- Dọn buffer giữ chỗ của gf trong diffview khỏi jumplist/shada
+require("config.diff_return").setup()

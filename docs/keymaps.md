@@ -74,7 +74,7 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `gn` / `gp` | Next / previous hunk |
 | `gd` | Diff current file |
 | `gb` | Blame current line in a float (works on both diffview sides) |
-| `gv` | Diffview (all changes) |
+| `gv` | Diffview (all changes; reuses the open one instead of opening another tab) |
 | `gx` | Resolve merge conflicts (Diffview 3-way, only when conflicts exist) |
 | `gf` | File history |
 | `gq` | Close diffview |
@@ -206,7 +206,7 @@ While several cursors exist:
 
 - Marks use the default `marks.nvim` mappings (`m` plus a key, `dm` plus a key).
 - `gc`, `gb`, `ys` and `yS` are operators and always wait for the next key.
-- Diffview buffers are read-only. The old-revision side is renamed to a sibling path (`lua/config/diff_lsp.lua`) so running LSP clients attach and all LSP keymaps work there. `gf` in diffview unlocks the real file and opens it at the cursor line for editing.
+- Diffview buffers are read-only. The old-revision side is renamed to a sibling path (`lua/config/diff_lsp.lua`) so running LSP clients attach and all LSP keymaps work there. `gf` in diffview opens the real file at the cursor line for editing; `Ctrl-o` walks back through that file's jumplist and finally returns to the exact diffview window and cursor where `gf` was pressed (each `gf` remembers its own origin, so repeated `gv` → `gf` nest correctly). The real file is locked only while its diffview tab is current, so it stays editable in the edit tab and its LSP keymaps are restored when you switch back.
 - Merge conflicts: `:DiffviewOpen` shows OURS | result | THEIRS. The result (middle) stays editable; `<leader>co` / `ct` / `cb` / `ca` pick ours / theirs / base / all for the block under the cursor, `<leader>cO` / `cT` / `cB` / `cA` for the whole file, `]x` / `[x` jump between conflicts (diffview buffers only). If the result cursor is outside a block, the block keys jump to the next block and notify instead of acting; press again to apply.
 - To check conflicts after changing keymaps, load all plugins in headless Neovim, dump
   `nvim_get_keymap` for each mode, and look for duplicate or prefix-overlapping `lhs`.

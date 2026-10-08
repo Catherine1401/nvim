@@ -16,6 +16,23 @@ local function toggle_full_diff()
 	end)
 end
 
+-- Diffview so sánh working tree đang mở thì quay lại tab đó và nạp lại, không mở thêm tab
+local function focus_open_diffview()
+	local lib = package.loaded["diffview.lib"]
+	if not lib then
+		return false
+	end
+	local diff_view = require("diffview.scene.views.diff.diff_view").DiffView
+	for _, view in ipairs(lib.views) do
+		if view:instanceof(diff_view) and vim.api.nvim_tabpage_is_valid(view.tabpage) then
+			vim.api.nvim_set_current_tabpage(view.tabpage)
+			vim.cmd("DiffviewRefresh")
+			return true
+		end
+	end
+	return false
+end
+
 -- Chỉ mở diffview khi có thay đổi, tránh kẹt trong giao diện rỗng
 local function open_diffview()
 	local status = vim.fn.systemlist({ "git", "status", "--porcelain" })
@@ -23,7 +40,7 @@ local function open_diffview()
 		vim.notify("Không phải git repo", vim.log.levels.WARN)
 	elseif #status == 0 then
 		vim.notify("Không có thay đổi để diff", vim.log.levels.INFO)
-	else
+	elseif not focus_open_diffview() then
 		vim.cmd("DiffviewOpen")
 	end
 end
@@ -92,6 +109,7 @@ return {
 			end,
 			view_closed = function()
 				require("config.diff_lsp").unlock_all()
+				require("config.diff_return").clear()
 			end,
 		},
 		-- Merge tool: ours và theirs chia đôi ở trên, file kết quả nằm riêng ở dưới
