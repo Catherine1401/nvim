@@ -16,7 +16,7 @@ local function toggle_full_diff()
 	end)
 end
 
--- Diffview so sánh working tree đang mở thì quay lại tab đó và nạp lại, không mở thêm tab
+-- Diffview so sánh working tree (không có rev) đang mở thì quay lại tab đó và nạp lại, không mở thêm tab; view của commit không tính
 local function focus_open_diffview()
 	local lib = package.loaded["diffview.lib"]
 	if not lib then
@@ -24,7 +24,7 @@ local function focus_open_diffview()
 	end
 	local diff_view = require("diffview.scene.views.diff.diff_view").DiffView
 	for _, view in ipairs(lib.views) do
-		if view:instanceof(diff_view) and vim.api.nvim_tabpage_is_valid(view.tabpage) then
+		if view:instanceof(diff_view) and view.rev_arg == nil and vim.api.nvim_tabpage_is_valid(view.tabpage) then
 			vim.api.nvim_set_current_tabpage(view.tabpage)
 			vim.cmd("DiffviewRefresh")
 			return true
