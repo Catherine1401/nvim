@@ -154,7 +154,7 @@ return {
 			-- Nhóm Debug/DevTools
 			{ "<leader>ri", function() require("config.flutter.inspect").toggle() end, desc = "Bật/Tắt Inspect Widget" },
 			{ "<leader>rw", "<cmd>FlutterOpenDevTools<cr>", desc = "Mở trang DevTools" },
-			{ "<leader>rg", function() require("config.flutter.tree").open() end, desc = "Cây widget toàn app" },
+			{ "<leader>rg", function() require("config.flutter.tree").toggle() end, desc = "Bật/Tắt cây widget toàn app" },
 
 			-- Nhóm LSP & Dart
 			{ "<leader>rp", "<cmd>FlutterPubGet<cr>", desc = "Chạy pub get" },

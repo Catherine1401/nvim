@@ -381,6 +381,14 @@ function M.open(on_done)
   end)
 end
 
+-- Cây đang hiển thị thì đóng cửa sổ, chưa hiển thị thì mở
+function M.toggle()
+  local buf = find_buf()
+  local win = buf and vim.fn.win_findbuf(buf)[1]
+  if win then return vim.api.nvim_win_close(win, true) end
+  M.open()
+end
+
 -- Chuyển cây sang isolate giao diện kế tiếp và chuyển chế độ inspector theo; chỉ có một isolate thì báo và giữ nguyên
 function M.switch()
   local session = require("dap").session()
