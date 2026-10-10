@@ -41,6 +41,17 @@ local function announce_stop(session, body)
 	end)
 end
 
+-- Cuộn mọi cửa sổ REPL tới dòng mới nhất khi có output (log của logpoint, print); bỏ qua cửa sổ bạn đang đứng để không giật khi đang đọc
+local function follow_repl()
+	local current = vim.api.nvim_get_current_win()
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local buf = vim.api.nvim_win_get_buf(win)
+		if win ~= current and vim.bo[buf].filetype == "dap-repl" then
+			pcall(vim.api.nvim_win_set_cursor, win, { vim.api.nvim_buf_line_count(buf), 0 })
+		end
+	end
+end
+
 return {
 	"rcarriga/nvim-dap-ui",
 	dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
@@ -76,6 +87,9 @@ return {
 					end
 				end)
 			end
+		end
+		dap.listeners.after.event_output["repl_follow"] = function()
+			vim.schedule(follow_repl)
 		end
 		dap.listeners.before.event_terminated["dapui_config"] = dapui.close
 		dap.listeners.before.event_exited["dapui_config"] = dapui.close
