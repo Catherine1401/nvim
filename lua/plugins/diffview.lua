@@ -98,8 +98,14 @@ return {
 	end,
 	opts = {
 		hooks = {
-			diff_buf_win_enter = function(bufnr, _, ctx)
+			diff_buf_win_enter = function(bufnr, winid, ctx)
 				require("config.diff_lsp").on_buf_enter(bufnr, ctx)
+				require("config.diff_return").clear_jumps(winid)
+			end,
+			view_opened = function(view)
+				for _, win in ipairs(vim.api.nvim_tabpage_list_wins(view.tabpage)) do
+					require("config.diff_return").clear_jumps(win)
+				end
 			end,
 			-- Chạy ngay trước :tabclose của diffview: buffer đã sửa không được phép ẩn sẽ làm :tabclose báo E445
 			view_leave = function(view)

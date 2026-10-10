@@ -117,6 +117,7 @@ end
 function M.goto_edit()
 	local back = require("config.diff_return")
 	back.mark_origin()
+	require("config.diff_target").prepare()
 	require("diffview.actions").goto_file_edit()
 	sync_lock()
 	back.mark_arrival()

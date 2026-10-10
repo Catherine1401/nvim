@@ -119,6 +119,15 @@ function M.setup()
 	})
 end
 
+-- Cửa sổ diffview tách ra từ cửa sổ khác nên thừa hưởng jumplist của nó; xoá để Ctrl-o không kéo cửa sổ diff sang buffer lạ (log, diffview://null)
+function M.clear_jumps(win)
+	if win and vim.api.nvim_win_is_valid(win) then
+		vim.api.nvim_win_call(win, function()
+			vim.cmd("clearjumps")
+		end)
+	end
+end
+
 -- Diffview đóng: bỏ mọi buffer giữ chỗ
 function M.clear()
 	current = nil
