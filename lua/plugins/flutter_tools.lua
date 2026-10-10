@@ -128,6 +128,7 @@ return {
 			require("config.flutter.inspect").setup()
 			require("config.flutter.log_follow").setup()
 			require("config.flutter.tree").setup()
+			require("config.flutter.debug_app").setup()
 
 			-- Telescope đã nạp thì nạp luôn extension; chưa thì nạp ở lần bấm phím rs đầu tiên
 			if package.loaded["telescope"] then
