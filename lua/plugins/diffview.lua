@@ -45,6 +45,18 @@ local function open_diffview()
 	end
 end
 
+-- Đóng mọi diffview đang mở dù đang đứng ở tab nào (DiffviewClose chỉ đóng view của tab hiện tại)
+local function close_all_diffviews()
+	local lib = package.loaded["diffview.lib"]
+	if not lib then
+		return
+	end
+	for _, view in ipairs(vim.list_slice(lib.views)) do
+		view:close()
+		lib.dispose_view(view)
+	end
+end
+
 -- Chỉ mở giao diện giải quyết xung đột khi còn file chưa merge
 local function open_conflicts()
 	local unmerged = vim.fn.systemlist({ "git", "diff", "--name-only", "--diff-filter=U" })
@@ -130,7 +142,7 @@ return {
 		{ "<leader>gv", open_diffview, desc = "Diff toàn bộ thay đổi" },
 		{ "<leader>gx", open_conflicts, desc = "Giải quyết xung đột merge" },
 		{ "<leader>gf", "<cmd>DiffviewFileHistory %<cr>", desc = "Lịch sử file hiện tại" },
-		{ "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Đóng diffview" },
+		{ "<leader>gq", close_all_diffviews, desc = "Đóng diffview ở mọi tab" },
 		{ "<leader>gz", toggle_full_diff, desc = "Bật/tắt hiện toàn bộ file trong diff" },
 	},
 }

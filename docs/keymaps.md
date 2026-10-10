@@ -77,7 +77,7 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `gv` | Diffview of the working tree (reuses the open one; never reuses a commit view) |
 | `gx` | Resolve merge conflicts (Diffview 3-way, only when conflicts exist) |
 | `gf` | File history |
-| `gq` | Close diffview |
+| `gq` | Close every open diffview, from any tab |
 | `gz` | Toggle full-file view in diff |
 | `gw` / `gW` | Switch or delete / create worktree |
 
