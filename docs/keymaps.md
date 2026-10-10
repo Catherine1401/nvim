@@ -128,6 +128,18 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 
 `gopls` is started by go.nvim and uses the LSP keymaps above: `gd` definition, `gi` implementation, `K` signature and docs, `grr` usages, `grn` rename across files, `gra` code actions (Extract variable, Extract function, Inline call). Saving a Go file runs `goimports` (format plus imports).
 
+### Debug (`k`)
+| Keys | Action |
+|---|---|
+| `kb` / `kB` | Toggle breakpoint / conditional breakpoint |
+| `kl` / `kx` | List all breakpoints in the quickfix window / clear all breakpoints |
+| `kc` | Start or continue debugging |
+| `kn` / `ki` / `ko` | Step over / into / out |
+| `ku` | Toggle the debug UI (scopes, stacks, breakpoints, watches, console) |
+| `kr` | Toggle the debug REPL |
+
+The UI opens only when a session stops at a breakpoint (a plain `FlutterRun` through DAP does not open it) and closes when the session ends. Go uses `:GoDebug` (go.nvim, `dlv`); Dart/Flutter uses the launch configuration from flutter-tools.
+
 ### Misc (`m`)
 | Keys | Action |
 |---|---|
