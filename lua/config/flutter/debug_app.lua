@@ -18,7 +18,7 @@ local function application_id(root)
 	end
 end
 
--- Id thiết bị nằm sau cờ -d trong args của cấu hình launch
+-- Id thiết bị nằm sau cờ -d trong args của cấu hình launch (chỉ có khi bạn chọn thiết bị tường minh)
 local function device_id(args)
 	for i, arg in ipairs(args or {}) do
 		if arg == "-d" then
@@ -27,14 +27,31 @@ local function device_id(args)
 	end
 end
 
+-- Serial các thiết bị adb đang kết nối (dùng khi lệnh chạy không chỉ định -d)
+local function connected_devices()
+	local ok, result = pcall(function()
+		return vim.system({ "adb", "devices" }, { text = true }):wait(ADB_TIMEOUT_MS)
+	end)
+	local serials = {}
+	for line in ((ok and result.stdout) or ""):gmatch("[^\n]+") do
+		local serial = line:match("^(%S+)%s+device$")
+		if serial then
+			serials[#serials + 1] = serial
+		end
+	end
+	return serials
+end
+
 -- Chạy trước khi phiên bắt đầu (cờ chỉ áp dụng cho tiến trình khởi động sau đó); lỗi hay thiết bị không phải Android thì bỏ qua
 local function mark(config)
-	local device = device_id(config.args)
-	local id = device and application_id(config.cwd or vim.fn.getcwd())
+	local id = application_id(config.cwd or vim.fn.getcwd())
 	if id then
-		pcall(function()
-			vim.system({ "adb", "-s", device, "shell", "am", "set-debug-app", "--persistent", id }):wait(ADB_TIMEOUT_MS)
-		end)
+		local device = device_id(config.args)
+		for _, serial in ipairs(device and { device } or connected_devices()) do
+			pcall(function()
+				vim.system({ "adb", "-s", serial, "shell", "am", "set-debug-app", "--persistent", id }):wait(ADB_TIMEOUT_MS)
+			end)
+		end
 	end
 	return config
 end
