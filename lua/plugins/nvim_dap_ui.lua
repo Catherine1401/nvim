@@ -65,6 +65,17 @@ return {
 		dap.defaults.fallback.switchbuf = "usevisible,usetab,newtab"
 		-- Chỉ mở UI khi dừng ở breakpoint, để chạy Flutter qua DAP bình thường không bật UI mỗi lần
 		dap.listeners.after.event_stopped["dapui_config"] = announce_stop
+		-- Làm mới thanh trạng thái ngay khi phiên dừng hoặc chạy tiếp, để chỉ báo "đang dừng" không trễ tới lần di chuyển con trỏ kế tiếp
+		for _, event in ipairs({ "event_stopped", "event_continued", "event_terminated", "event_exited" }) do
+			dap.listeners.after[event]["lualine_refresh"] = function()
+				vim.schedule(function()
+					local ok, lualine = pcall(require, "lualine")
+					if ok then
+						lualine.refresh()
+					end
+				end)
+			end
+		end
 		dap.listeners.before.event_terminated["dapui_config"] = dapui.close
 		dap.listeners.before.event_exited["dapui_config"] = dapui.close
 	end,

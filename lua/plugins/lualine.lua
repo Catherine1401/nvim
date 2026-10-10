@@ -39,6 +39,17 @@ return {
 
 				-- Giữ nguyên các phần bên phải
 				lualine_x = {
+					-- App Flutter đứng yên khi debug đang dừng (breakpoint hay step); nhắc luôn trên thanh trạng thái
+					{
+						function()
+							return "⏸ Đang dừng, <leader>kc để chạy tiếp"
+						end,
+						cond = function()
+							local session = package.loaded["dap"] and require("dap").session()
+							return session ~= nil and session.stopped_thread_id ~= nil
+						end,
+						color = "DiagnosticWarn",
+					},
 					{
 						show_keys,
 						cond = has_keys,
