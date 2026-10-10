@@ -9,6 +9,10 @@ local wanted = false
 -- Isolate bị tắt inspector do chuyển isolate (không phải ý định tắt của người dùng)
 local released = {}
 
+-- Thời điểm chuyển isolate gần nhất và khoảng bỏ qua sự kiện tắt do chính việc chuyển gây ra
+local moved_at = 0
+local MOVE_QUIET_NS = 1000 * 1000 * 1000
+
 -- Ghi nhận ý định bật/tắt từ chính các lệnh callService của plugin (nvim-dap truyền thẳng bảng arguments)
 local function track_intent(_, err, _, args)
   if err or not args or args.method ~= EXT or not args.params then return end
@@ -26,6 +30,14 @@ local function restore(session, body)
   session:request("callService", { method = EXT, params = { enabled = "true", isolateId = body.isolateId } }, function() end)
 end
 
+-- App tự đổi trạng thái (nút "x" trên máy, thoát chế độ chọn): theo đó để hot restart không bật lại ngoài ý muốn
+local function track_device_state(_, body)
+  if not body or body.extension ~= EXT then return end
+  local enabled = tostring(body.value) == "true"
+  if not enabled and vim.uv.hrtime() - moved_at < MOVE_QUIET_NS then return end
+  wanted = enabled
+end
+
 -- Bật/tắt chế độ chọn widget trên isolate giao diện, đảo theo trạng thái thật của app
 function M.toggle()
   local session = require("dap").session()
@@ -41,6 +53,7 @@ end
 -- Chuyển chế độ chọn widget từ isolate cũ sang isolate mới khi người dùng đổi isolate đang xem và đang bật inspector
 function M.move(session, from, to)
   if not wanted or not to or from == to then return end
+  moved_at = vim.uv.hrtime()
   if from then released[from] = true end
   if from then session:request("callService", { method = EXT, params = { enabled = "false", isolateId = from } }, function() end) end
   session:request("callService", { method = EXT, params = { enabled = "true", isolateId = to } }, function() end)
@@ -52,6 +65,7 @@ function M.setup()
   local dap = require("dap")
   dap.listeners.after.callService[KEY] = track_intent
   dap.listeners.after["event_dart.serviceExtensionAdded"][KEY] = restore
+  dap.listeners.after["event_flutter.serviceExtensionStateChanged"][KEY] = track_device_state
   for _, event in ipairs({ "event_terminated", "event_exited" }) do
     dap.listeners.after[event][KEY] = function() wanted = false end
   end
