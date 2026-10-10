@@ -131,7 +131,8 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 ### Debug (`k`)
 | Keys | Action |
 |---|---|
-| `kb` / `kB` | Toggle breakpoint / conditional breakpoint |
+| `kb` / `kd` | Toggle breakpoint / conditional breakpoint |
+| `kp` | Logpoint: print a message to the REPL (`{expression}` is evaluated) without stopping the app; `Tab` completes names found in the file (type a few letters, e.g. `to` → `{total}`) |
 | `kl` / `kx` | List all breakpoints in the quickfix window / clear all breakpoints |
 | `kc` | Start or continue debugging |
 | `kn` / `ki` / `ko` | Step over / into / out |

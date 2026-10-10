@@ -46,7 +46,8 @@ return {
 	dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
 	keys = {
 		{ "<leader>kb", function() require("dap").toggle_breakpoint() end, desc = "Bật/tắt breakpoint" },
-		{ "<leader>kB", function() require("dap").set_breakpoint(vim.fn.input("Điều kiện: ")) end, desc = "Breakpoint có điều kiện" },
+		{ "<leader>kd", function() require("dap").set_breakpoint(vim.fn.input("Điều kiện: ")) end, desc = "Breakpoint có điều kiện" },
+		{ "<leader>kp", function() require("config.dap_logpoint").set() end, desc = "Đặt logpoint (in ra REPL, không dừng)" },
 		{ "<leader>kl", function() require("dap").list_breakpoints(true) end, desc = "Liệt kê breakpoint" },
 		{ "<leader>kx", function() require("dap").clear_breakpoints() end, desc = "Xoá mọi breakpoint" },
 		{ "<leader>kc", function() require("dap").continue() end, desc = "Bắt đầu/tiếp tục debug" },
