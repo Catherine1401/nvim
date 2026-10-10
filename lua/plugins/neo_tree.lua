@@ -1,3 +1,14 @@
+-- Cuộn trang bằng neoscroll (có stop_eof) khi không có preview; có preview thì cuộn preview như mặc định của neo-tree
+local function scroll_page(direction, scroll)
+	return function(state)
+		local preview = require("neo-tree.sources.common.preview")
+		if preview:is_active() then
+			return preview.scroll({ config = { direction = direction }, winid = state.winid })
+		end
+		scroll({ duration = 450 })
+	end
+end
+
 -- Nhảy một bước tới kết quả kế tiếp/trước, bỏ qua thư mục cha; trả về false nếu hết kết quả
 local function step_result(state, pad, step)
 	local renderer = require("neo-tree.ui.renderer")
@@ -72,6 +83,8 @@ return {
 					["<2-LeftMouse>"] = "open",
 					["<cr>"] = "open",
 					["<esc>"] = "cancel",
+					["<C-f>"] = scroll_page(-10, function(opts) require("neoscroll").ctrl_f(opts) end),
+					["<C-b>"] = scroll_page(10, function(opts) require("neoscroll").ctrl_b(opts) end),
 					["P"] = { "toggle_preview", config = { use_float = true } },
 					["l"] = "open",
 					["S"] = "open_split",
