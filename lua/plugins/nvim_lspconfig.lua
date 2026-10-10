@@ -170,13 +170,6 @@ return {
 						{ buffer = ev.buf, desc = "Go to implementation" }
 					)
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = ev.buf, desc = "Hover Info" })
-					vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { buffer = ev.buf, desc = "Rename Symbol" })
-					vim.keymap.set(
-						{ "n", "v" },
-						"<leader>ca",
-						vim.lsp.buf.code_action,
-						{ buffer = ev.buf, desc = "Code Action" }
-					)
 				end,
 			})
 		end,

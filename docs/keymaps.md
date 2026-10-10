@@ -51,13 +51,6 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `bo` | Close other buffers |
 | `bs` | Pick buffer |
 
-### Code (`c`)
-| Keys | Action |
-|---|---|
-| `ca` | Code action (LSP, normal and visual) |
-| `cr` | Rename symbol (LSP) |
-| `cf` | Format |
-
 ### Diagnostics (`d`)
 | Keys | Action |
 |---|---|
@@ -133,7 +126,7 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `jf` | Run the tests of the current file |
 | `jp` | Run the tests of the current package |
 
-`gopls` is started by go.nvim and uses the LSP keymaps above: `gd` definition, `gi` implementation, `K` signature and docs, `grr` usages, `cr` rename across files, `ca` code actions (Extract variable, Extract function, Inline call). Saving a Go file runs `goimports` (format plus imports).
+`gopls` is started by go.nvim and uses the LSP keymaps above: `gd` definition, `gi` implementation, `K` signature and docs, `grr` usages, `grn` rename across files, `gra` code actions (Extract variable, Extract function, Inline call). Saving a Go file runs `goimports` (format plus imports).
 
 ### Misc (`m`)
 | Keys | Action |
@@ -174,6 +167,7 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `p` (visual) | Paste without overwriting the register |
 | `Z` / `gZ` (visual) | Surround selection / surround lines |
 | `gc` / `gb` | Comment line / block (operator) |
+| `grn` / `gra` / `grf` | LSP rename / code action (Neovim defaults) / format (formatter, falls back to LSP; normal and visual) |
 | `q` | Close help, quickfix, man, notify and similar windows |
 | `<S-Enter>` (command line) | Redirect the command output to a split (Noice) |
 

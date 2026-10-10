@@ -7,9 +7,22 @@ return {
 		keys = {
 			{
 				-- Phím tắt Format thủ công
-				"<leader>cf",
+				"grf",
 				function()
-					require("conform").format({ async = true, lsp_format = "fallback" })
+					local opts = { async = true, lsp_format = "fallback" }
+					local mode = vim.fn.mode()
+					if mode == "v" or mode == "V" then
+						-- Tự tính range vì conform trừ 1 ở cột cuối nên stylua bỏ sót câu lệnh cuối
+						local from, to = vim.fn.getpos("v"), vim.fn.getpos(".")
+						if from[2] > to[2] or (from[2] == to[2] and from[3] > to[3]) then
+							from, to = to, from
+						end
+						local last = vim.api.nvim_buf_get_lines(0, to[2] - 1, to[2], true)[1]
+						local start_col = mode == "V" and 0 or from[3] - 1
+						local end_col = mode == "V" and #last or to[3]
+						opts.range = { start = { from[2], start_col }, ["end"] = { to[2], end_col } }
+					end
+					require("conform").format(opts)
 				end,
 				mode = "",
 				desc = "Format Code",

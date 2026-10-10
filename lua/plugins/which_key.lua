@@ -39,7 +39,6 @@ return {
 
 					-- Nhóm các phím chức năng lại với nhau
 					{ "<leader>b", group = "Buffer" },
-					{ "<leader>c", group = "Code" },
 					{ "<leader>f", group = "File/Find" },
 					{ "<leader>g", group = "Git" },
 					{ "<leader>d", group = "Diagnostics" },
