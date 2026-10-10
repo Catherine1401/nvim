@@ -50,6 +50,7 @@ return {
 					{ "<leader>r", group = "Flutter Tools", icon = " " },
 					{ "<leader>o", group = "Codex" },
 					{ "<leader>j", group = "Go" },
+					{ "<leader>k", group = "Debug" },
 				},
 
 				-- Ẩn các phím không cần thiết khỏi menu (cho gọn)

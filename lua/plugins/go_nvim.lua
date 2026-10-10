@@ -9,6 +9,11 @@ return {
 			lsp_keymaps = false,
 			-- Binary goimports vừa format vừa sắp import; mặc định 'gopls' chỉ sắp import
 			goimports = "goimports",
+			-- DAP do nvim_dap_ui.lua lo: tắt sign emoji, UI trùng, phím một chữ và virtual text của go.nvim
+			icons = false,
+			dap_debug_gui = false,
+			dap_debug_keymap = false,
+			dap_debug_vt = false,
 		})
 		vim.api.nvim_create_autocmd("BufWritePre", {
 			group = vim.api.nvim_create_augroup("GoFormat", {}),
