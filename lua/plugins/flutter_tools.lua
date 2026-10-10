@@ -96,6 +96,9 @@ return {
 								flutterSdkPath = paths.flutter_sdk,
 								program = "${workspaceFolder}/lib/main.dart",
 								cwd = "${workspaceFolder}",
+								-- Chỉ dừng và step trong code của project: mặc định adapter bật debug cả SDK lẫn package ngoài nên step đi vào framework.dart
+								debugSdkLibraries = false,
+								debugExternalPackageLibraries = false,
 							},
 						}
 					end,
