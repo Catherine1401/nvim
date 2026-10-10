@@ -1,7 +1,28 @@
 return {
 	{
 		"neovim/nvim-lspconfig",
-		event = { "BufReadPre", "BufNewFile" },
+		-- File mở lúc khởi động: nạp LSP sau màn hình đầu (VeryLazy); file mở sau đó: nạp ở BufReadPre/BufNewFile như cũ
+		event = "User LspStart",
+		init = function()
+			local group = vim.api.nvim_create_augroup("LspDeferredStart", {})
+			local function start()
+				vim.api.nvim_exec_autocmds("User", { pattern = "LspStart" })
+			end
+			vim.api.nvim_create_autocmd("User", {
+				group = group,
+				pattern = "VeryLazy",
+				once = true,
+				callback = function()
+					if vim.api.nvim_buf_get_name(0) ~= "" then
+						start()
+						-- mason-tool-installer vốn tự chạy ở VimEnter; LSP nạp sau VimEnter nên gọi tay để giữ việc kiểm tra cài công cụ như cũ
+						pcall(vim.api.nvim_del_augroup_by_name, "mti_start")
+						require("mason-tool-installer").run_on_start()
+					end
+					vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, { group = group, once = true, callback = start })
+				end,
+			})
+		end,
 		dependencies = {
 			"williamboman/mason.nvim",
 			"williamboman/mason-lspconfig.nvim",
@@ -94,10 +115,13 @@ return {
 				capabilities = capabilities,
 				settings = {
 					json = {
-						schemas = require("schemastore").json.schemas(),
 						validate = { enable = true },
 					},
 				},
+				-- Chỉ tạo danh sách schema (tốn vài ms) khi server JSON thật sự khởi động
+				before_init = function(_, config)
+					config.settings.json.schemas = require("schemastore").json.schemas()
+				end,
 			})
 
 			-- Các server khác (Mặc định)
