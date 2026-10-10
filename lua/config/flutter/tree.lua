@@ -6,7 +6,7 @@ local scope = require("config.flutter.scope")
 local BUF_NAME = "__FLUTTER_WIDGET_TREE__"
 local GROUP = "config-flutter-tree"
 local NS = vim.api.nvim_create_namespace("flutter_widget_tree")
-local MIN_WIDTH, MIN_MAX_WIDTH, MAX_WIDTH_RATIO = 36, 70, 0.55
+local MIN_WIDTH, MIN_MAX_WIDTH, MAX_WIDTH_RATIO = 36, 42, 0.33
 local SEGMENT_WIDTH, NAME_RESERVE, MIN_LEVELS = 3, 28, 6
 local PUSH_THROTTLE_MS, SELF_EVENT_NS = 120, 600 * 1000 * 1000
 
