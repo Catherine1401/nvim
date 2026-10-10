@@ -15,6 +15,32 @@ local function define_signs()
 	end
 end
 
+-- Khi dừng (trừ bước step) báo rõ vị trí và cách chạy tiếp, vì app đứng hình tới khi chạy tiếp; mở UI sau khi nvim-dap đã chuyển tới mã nguồn
+local function announce_stop(session, body)
+	local function open_ui() require("dapui").open() end
+	-- Flutter dừng ngắn lúc khởi động (entry, không có mã nguồn) rồi tự chạy tiếp: không báo, không mở UI
+	if body.reason == "entry" then
+		return
+	end
+	if body.reason == "step" then
+		return open_ui()
+	end
+	session:request("stackTrace", { threadId = body.threadId, startFrame = 0, levels = 1 }, function(err, response)
+		local frame = not err and response and response.stackFrames[1]
+		local path = frame and frame.source and frame.source.path
+		local where = path and (vim.fn.fnamemodify(path, ":t") .. ":" .. frame.line) or "vị trí không có mã nguồn"
+		vim.schedule(function()
+			vim.notify(string.format("Đang dừng ở %s (%s), bấm <leader>kc để chạy tiếp", where, body.reason), vim.log.levels.WARN)
+			-- Tới cửa sổ đã hiện mã nguồn (hoặc mở tab mới) trước khi mở UI để UI nằm cùng tab với dòng dừng
+			if path then
+				vim.cmd("tab drop " .. vim.fn.fnameescape(path))
+				pcall(vim.api.nvim_win_set_cursor, 0, { frame.line, 0 })
+			end
+			open_ui()
+		end)
+	end)
+end
+
 return {
 	"rcarriga/nvim-dap-ui",
 	dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
@@ -35,8 +61,10 @@ return {
 		dapui.setup()
 		define_signs()
 		vim.api.nvim_create_autocmd("ColorScheme", { group = vim.api.nvim_create_augroup("DapSigns", {}), callback = define_signs })
+		-- Luôn chuyển tới cửa sổ/tab có mã nguồn đang dừng (mở tab mới nếu chưa có) thay vì ghi đè cửa sổ trước, ví dụ khi đang đứng ở tab log
+		dap.defaults.fallback.switchbuf = "usevisible,usetab,newtab"
 		-- Chỉ mở UI khi dừng ở breakpoint, để chạy Flutter qua DAP bình thường không bật UI mỗi lần
-		dap.listeners.after.event_stopped["dapui_config"] = dapui.open
+		dap.listeners.after.event_stopped["dapui_config"] = announce_stop
 		dap.listeners.before.event_terminated["dapui_config"] = dapui.close
 		dap.listeners.before.event_exited["dapui_config"] = dapui.close
 	end,
