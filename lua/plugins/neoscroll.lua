@@ -1,6 +1,8 @@
 return {
   "karb94/neoscroll.nvim",
   event = "VeryLazy",
+  -- noice cũng map <C-f>/<C-b>; nạp noice trước để neoscroll luôn là bên ghi đè cuối, không phụ thuộc thứ tự nạp
+  dependencies = { "folke/noice.nvim" },
   config = function()
     local neoscroll = require("neoscroll")
     local hscroll = require("config.hscroll")

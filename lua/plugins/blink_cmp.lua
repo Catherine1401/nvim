@@ -5,7 +5,9 @@ return {
 	build = function()
 		require("blink.cmp").build():pwait()
 	end,
-	dependencies = { "L3MON4D3/LuaSnip", "saghen/blink.lib" },
+	-- Chỉ nạp khi vào Insert/Cmdline; LuaSnip tự nạp ở lần require đầu tiên (xem luasnip.lua)
+	event = { "InsertEnter", "CmdlineEnter" },
+	dependencies = { "saghen/blink.lib" },
 	opts = {
 		snippets = {
 			preset = "luasnip",

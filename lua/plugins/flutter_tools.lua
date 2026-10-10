@@ -1,7 +1,11 @@
+-- Project Flutter (có pubspec.yaml ở cwd): nạp ngay sau màn hình đầu để :Flutter* sẵn sàng; nơi khác chỉ nạp khi mở file dart hoặc bấm phím r
+local IN_FLUTTER_PROJECT = vim.uv.fs_stat(vim.fn.getcwd() .. "/pubspec.yaml") ~= nil
+
 return {
 	{
 		"nvim-flutter/flutter-tools.nvim",
-		lazy = false, -- Load ngay để tự động nhận diện dự án Flutter
+		ft = "dart",
+		event = IN_FLUTTER_PROJECT and "VeryLazy" or nil,
 		-- Thay client VM service của plugin bằng bản tự kết nối lại; phải chạy trước khi plugin require module này
 		init = function() package.loaded["flutter-tools.vm_service"] = require("config.flutter.vm_service") end,
 		dependencies = {
@@ -125,8 +129,10 @@ return {
 			require("config.flutter.log_follow").setup()
 			require("config.flutter.tree").setup()
 
-			-- Tích hợp với Telescope (nếu cậu dùng Telescope)
-			require("telescope").load_extension("flutter")
+			-- Telescope đã nạp thì nạp luôn extension; chưa thì nạp ở lần bấm phím rs đầu tiên
+			if package.loaded["telescope"] then
+				require("telescope").load_extension("flutter")
+			end
 		end,
 
 		-- 9. Phím tắt chuyên dụng (Keymaps)
@@ -134,6 +140,7 @@ return {
 			{
 				"<leader>rs",
 				function()
+					require("telescope").load_extension("flutter")
 					require("telescope").extensions.flutter.commands()
 				end,
 				desc = "Flutter Commands",

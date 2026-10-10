@@ -1,6 +1,7 @@
 return {
 	{
 		"nvim-telescope/telescope.nvim",
+		cmd = "Telescope", -- giữ :Telescope dùng được trước khi bấm phím tìm kiếm đầu tiên
 		-- tag = "0.1.8", -- Dùng bản tag ổn định thay vì branch master (theo khuyến nghị của docs)
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -140,7 +141,7 @@ return {
 			telescope.load_extension("noice") -- Load lịch sử thông báo
 
 			-- Load các extension nếu có cài
-			if pcall(require, "flutter-tools") then
+			if package.loaded["flutter-tools"] then
 				telescope.load_extension("flutter")
 			end
 			if pcall(require, "lazygit") then

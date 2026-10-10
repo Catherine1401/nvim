@@ -1,6 +1,7 @@
 -- snippets
 return {
 	"L3MON4D3/LuaSnip",
+	lazy = true, -- nạp khi blink.cmp hoặc code khác require("luasnip") lần đầu
 	version = "v2.*",
 	build = "make install_jsregexp",
 	dependencies = {
