@@ -50,6 +50,7 @@ return {
 					-- Nhóm riêng cho Flutter (Cậu là Flutter dev mà)
 					{ "<leader>r", group = "Flutter Tools", icon = " " },
 					{ "<leader>o", group = "Codex" },
+					{ "<leader>j", group = "Go" },
 				},
 
 				-- Ẩn các phím không cần thiết khỏi menu (cho gọn)

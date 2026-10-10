@@ -126,6 +126,15 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `rm` | Rename symbol |
 | `rs` | Flutter commands (Telescope) |
 
+### Go (`j`, Go buffers only)
+| Keys | Action |
+|---|---|
+| `jt` | Run the test under the cursor (failures go to quickfix) |
+| `jf` | Run the tests of the current file |
+| `jp` | Run the tests of the current package |
+
+`gopls` is started by go.nvim and uses the LSP keymaps above: `gd` definition, `gi` implementation, `K` signature and docs, `grr` usages, `cr` rename across files, `ca` code actions (Extract variable, Extract function, Inline call). Saving a Go file runs `goimports` (format plus imports).
+
 ### Misc (`m`)
 | Keys | Action |
 |---|---|
