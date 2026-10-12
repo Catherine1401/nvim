@@ -40,3 +40,6 @@ vim.opt.hidden = true
 -- other config
 vim.opt.fileformat = "unix"
 vim.opt.fileformats = "unix,dos"
+
+-- 4. Cấu hình project (exrc)
+vim.opt.exrc = true            -- Đọc .nvim.lua trong thư mục project (hỏi tin cậy lần đầu), dùng cho flutter-tools setup_project
