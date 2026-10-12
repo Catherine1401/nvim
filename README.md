@@ -31,7 +31,7 @@ Run the same command again to update. A [Nerd Font](https://www.nerdfonts.com/) 
 ```
 init.lua          # entry point
 install.sh        # installer
-lua/config/       # options, keymaps, autocmds, lazy.nvim bootstrap, health check
+lua/config/       # options, keymaps, autocmds, lazy.nvim bootstrap, health check, feature modules (diff_*, flutter/)
 lua/plugins/      # one file per plugin, auto-imported by lazy.nvim
 ```
 

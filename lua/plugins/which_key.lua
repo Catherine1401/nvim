@@ -42,6 +42,7 @@ return {
 					{ "<leader>f", group = "File/Find" },
 					{ "<leader>g", group = "Git" },
 					{ "<leader>d", group = "Diagnostics" },
+					{ "<leader>c", group = "Conflict" },
 					{ "<leader>a", group = "AI/Claude Code" },
 					{ "<leader>m", group = "Markdown/Multicursor" },
 
@@ -51,13 +52,6 @@ return {
 					{ "<leader>j", group = "Go" },
 					{ "<leader>k", group = "Debug" },
 				},
-
-				-- Ẩn các phím không cần thiết khỏi menu (cho gọn)
-				{ "<leader>1", hidden = true },
-				{ "<leader>2", hidden = true },
-				{ "<leader>3", hidden = true },
-				{ "<leader>4", hidden = true },
-				{ "<leader>5", hidden = true },
 			},
 		},
 
