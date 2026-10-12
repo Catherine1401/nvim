@@ -65,7 +65,7 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `gg` | Neogit |
 | `gc` / `gs` | Commits / status (Telescope) |
 | `ga` / `gr` | Stage / reset hunk |
-| `gn` / `gp` | Next / previous hunk (uses `]c` / `[c` in diffview buffers of a commit) |
+| `gn` / `gp` | Next / previous hunk; wraps around at the last / first hunk of the file (uses `]c` / `[c` in diffview buffers of a commit) |
 | `gd` | Diff current file |
 | `gb` | Blame current line in a float (works on both diffview sides) |
 | `gv` | Diffview of the working tree (reuses the open one; never reuses a commit view) |
