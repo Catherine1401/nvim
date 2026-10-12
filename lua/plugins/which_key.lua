@@ -42,7 +42,6 @@ return {
 					{ "<leader>f", group = "File/Find" },
 					{ "<leader>g", group = "Git" },
 					{ "<leader>d", group = "Diagnostics" },
-					{ "<leader>h", group = "Harpoon" },
 					{ "<leader>a", group = "AI/Claude Code" },
 					{ "<leader>m", group = "Markdown/Multicursor" },
 

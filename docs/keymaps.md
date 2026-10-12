@@ -74,13 +74,6 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `gz` | Toggle full-file view in diff |
 | `gw` / `gW` | Switch or delete / create worktree |
 
-### Harpoon (`h`)
-| Keys | Action |
-|---|---|
-| `ha` | Add file |
-| `hh` | Menu |
-| `<leader>1` to `<leader>4` | Jump to file 1-4 |
-
 ### Claude Code (`a`)
 | Keys | Action |
 |---|---|
