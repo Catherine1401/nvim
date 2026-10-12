@@ -1,6 +1,73 @@
 -- Project Flutter (có pubspec.yaml ở cwd): nạp ngay sau màn hình đầu để :Flutter* sẵn sàng; nơi khác chỉ nạp khi mở file dart hoặc bấm phím r
 local IN_FLUTTER_PROJECT = vim.uv.fs_stat(vim.fn.getcwd() .. "/pubspec.yaml") ~= nil
 
+-- Lấy capabilities từ blink.cmp và tắt file-watcher động của LSP
+local function build_capabilities()
+	-- Lấy capabilities từ blink.cmp để LSP hoạt động mượt mà
+	local capabilities = require("blink.cmp").get_lsp_capabilities()
+
+	-- Tắt file-watcher động của LSP (xem lua/plugins/nvim_lspconfig.lua)
+	-- Repo Flutter lớn có .dart_tool/ và build/ với hàng chục nghìn file
+	capabilities.workspace = capabilities.workspace or {}
+	capabilities.workspace.didChangeWatchedFiles = {
+		dynamicRegistration = false,
+		relativePatternSupport = false,
+	}
+	return capabilities
+end
+
+-- Liệt kê thư mục dartls không cần phân tích
+local function build_excluded_folders()
+	-- Thư mục dartls không cần phân tích: giảm mạnh số file phải index khi
+	-- mở project lớn. Go-to-definition vào SDK/package vẫn hoạt động.
+	-- Đường dẫn Flutter SDK suy ra từ lệnh flutter trong PATH, không hardcode.
+	local excluded_folders = { vim.fn.expand("$HOME/.pub-cache") }
+	local flutter_bin = vim.fn.exepath("flutter")
+	if flutter_bin ~= "" then
+		-- <sdk>/bin/flutter -> <sdk>
+		excluded_folders[#excluded_folders + 1] = vim.fs.dirname(vim.fs.dirname(flutter_bin))
+	end
+	return excluded_folders
+end
+
+-- Đăng ký cấu hình launch mặc định cho DAP của Dart
+local function register_dap_configurations(paths)
+	require("dap").configurations.dart = {
+		-- Cấu hình mặc định cho Debugger
+		{
+			type = "dart",
+			request = "launch",
+			name = "Launch Flutter",
+			dartSdkPath = paths.dart_sdk,
+			flutterSdkPath = paths.flutter_sdk,
+			program = "${workspaceFolder}/lib/main.dart",
+			cwd = "${workspaceFolder}",
+			-- Chỉ dừng và step trong code của project: mặc định adapter bật debug cả SDK lẫn package ngoài nên step đi vào framework.dart
+			debugSdkLibraries = false,
+			debugExternalPackageLibraries = false,
+		},
+	}
+end
+
+-- Kích hoạt lệnh Flutter*, nạp module phụ trợ và extension telescope sau setup
+local function after_setup()
+	-- Plugin chỉ đăng ký lệnh Flutter* khi mở file dart/pubspec; cwd là project Flutter thì kích hoạt ngay
+	if vim.uv.fs_stat(vim.fn.getcwd() .. "/pubspec.yaml") then
+		vim.api.nvim_exec_autocmds("BufEnter", { group = "FlutterToolsGroup", pattern = "pubspec.yaml" })
+	end
+
+	-- Giữ chế độ chọn widget qua hot restart và tự cuộn log xuống cuối
+	require("config.flutter.inspect").setup()
+	require("config.flutter.log_follow").setup()
+	require("config.flutter.tree").setup()
+	require("config.flutter.debug_app").setup()
+
+	-- Telescope đã nạp thì nạp luôn extension; chưa thì nạp ở lần bấm phím rs đầu tiên
+	if package.loaded["telescope"] then
+		require("telescope").load_extension("flutter")
+	end
+end
+
 return {
 	{
 		"nvim-flutter/flutter-tools.nvim",
@@ -14,26 +81,8 @@ return {
 			"mfussenegger/nvim-dap", -- Hỗ trợ Debugger
 		},
 		config = function()
-			-- Lấy capabilities từ blink.cmp để LSP hoạt động mượt mà
-			local capabilities = require("blink.cmp").get_lsp_capabilities()
-
-			-- Tắt file-watcher động của LSP (xem lua/plugins/nvim_lspconfig.lua)
-			-- Repo Flutter lớn có .dart_tool/ và build/ với hàng chục nghìn file
-			capabilities.workspace = capabilities.workspace or {}
-			capabilities.workspace.didChangeWatchedFiles = {
-				dynamicRegistration = false,
-				relativePatternSupport = false,
-			}
-
-			-- Thư mục dartls không cần phân tích: giảm mạnh số file phải index khi
-			-- mở project lớn. Go-to-definition vào SDK/package vẫn hoạt động.
-			-- Đường dẫn Flutter SDK suy ra từ lệnh flutter trong PATH, không hardcode.
-			local excluded_folders = { vim.fn.expand("$HOME/.pub-cache") }
-			local flutter_bin = vim.fn.exepath("flutter")
-			if flutter_bin ~= "" then
-				-- <sdk>/bin/flutter -> <sdk>
-				excluded_folders[#excluded_folders + 1] = vim.fs.dirname(vim.fs.dirname(flutter_bin))
-			end
+			local capabilities = build_capabilities()
+			local excluded_folders = build_excluded_folders()
 
 			require("flutter-tools").setup({
 				-- 1. Giao diện (UI)
@@ -85,23 +134,7 @@ return {
 					enabled = true,
 					run_via_dap = true, -- Chạy app qua DAP để có thể đặt breakpoint
 					exception_breakpoints = {},
-					register_configurations = function(paths)
-						require("dap").configurations.dart = {
-							-- Cấu hình mặc định cho Debugger
-							{
-								type = "dart",
-								request = "launch",
-								name = "Launch Flutter",
-								dartSdkPath = paths.dart_sdk,
-								flutterSdkPath = paths.flutter_sdk,
-								program = "${workspaceFolder}/lib/main.dart",
-								cwd = "${workspaceFolder}",
-								-- Chỉ dừng và step trong code của project: mặc định adapter bật debug cả SDK lẫn package ngoài nên step đi vào framework.dart
-								debugSdkLibraries = false,
-								debugExternalPackageLibraries = false,
-							},
-						}
-					end,
+					register_configurations = register_dap_configurations,
 				},
 
 				-- 8. Cấu hình LSP (Dart Analysis)
@@ -122,21 +155,7 @@ return {
 				},
 			})
 
-			-- Plugin chỉ đăng ký lệnh Flutter* khi mở file dart/pubspec; cwd là project Flutter thì kích hoạt ngay
-			if vim.uv.fs_stat(vim.fn.getcwd() .. "/pubspec.yaml") then
-				vim.api.nvim_exec_autocmds("BufEnter", { group = "FlutterToolsGroup", pattern = "pubspec.yaml" })
-			end
-
-			-- Giữ chế độ chọn widget qua hot restart và tự cuộn log xuống cuối
-			require("config.flutter.inspect").setup()
-			require("config.flutter.log_follow").setup()
-			require("config.flutter.tree").setup()
-			require("config.flutter.debug_app").setup()
-
-			-- Telescope đã nạp thì nạp luôn extension; chưa thì nạp ở lần bấm phím rs đầu tiên
-			if package.loaded["telescope"] then
-				require("telescope").load_extension("flutter")
-			end
+			after_setup()
 		end,
 
 		-- 9. Phím tắt chuyên dụng (Keymaps)
