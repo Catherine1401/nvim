@@ -41,6 +41,115 @@ local function move_result(step)
 	end
 end
 
+-- Định nghĩa icon cho các sign chẩn đoán
+local function define_signs()
+	-- Giữ nguyên phần icon đẹp của cậu
+	vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
+	vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
+	vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
+	vim.fn.sign_define("DiagnosticSignHint", { text = "󰌵", texthl = "DiagnosticSignHint" })
+end
+
+-- Cấu hình cửa sổ neo-tree cùng toàn bộ phím tắt
+local function window_opts()
+	return {
+		position = "left",
+		width = 30,
+		mapping_options = {
+			noremap = true,
+			nowait = true,
+		},
+		mappings = {
+			-- Tớ giữ nguyên toàn bộ phím tắt cậu đã quen dùng
+			["<space>"] = "none", -- Tắt <space> để tránh chờ timeout do trùng tiền tố <leader>
+			["<2-LeftMouse>"] = "open",
+			["<cr>"] = "open",
+			["<esc>"] = "cancel",
+			["<C-f>"] = scroll_page(-10, function(opts) require("neoscroll").ctrl_f(opts) end),
+			["<C-b>"] = scroll_page(10, function(opts) require("neoscroll").ctrl_b(opts) end),
+			["P"] = { "toggle_preview", config = { use_float = true } },
+			["l"] = "open",
+			["S"] = "open_split",
+			["s"] = "open_vsplit",
+			["t"] = "open_tabnew",
+			["C"] = "close_node",
+			["z"] = "close_all_nodes",
+			["a"] = { "add", config = { show_path = "none" } },
+			["d"] = "delete",
+			["r"] = "rename",
+			["y"] = "copy_to_clipboard",
+			["x"] = "cut_to_clipboard",
+			["p"] = "paste_from_clipboard",
+			["c"] = "copy",
+			["m"] = "move",
+			["q"] = "close_window",
+			["R"] = "refresh",
+			["?"] = "show_help",
+			["Z"] = "expand_all_nodes",
+			-- Gắn nhãn flash ở đầu mọi dòng đang hiện để nhảy thẳng tới node
+			["f"] = function()
+				require("flash").jump({
+					pattern = "^",
+					search = { mode = "search", max_length = 0, multi_window = false },
+					label = { after = { 0, 0 } },
+				})
+			end,
+		},
+	}
+end
+
+-- Cấu hình nguồn filesystem
+local function filesystem_opts()
+	return {
+		window = {
+			mappings = {
+				["H"] = "toggle_hidden",
+			},
+			fuzzy_finder_mappings = {
+				["<down>"] = move_result(1),
+				["<C-n>"] = move_result(1),
+				["<up>"] = move_result(-1),
+				["<C-p>"] = move_result(-1),
+			},
+		},
+		filtered_items = {
+			visible = false, -- Cho phép hiện file ẩn nếu muốn
+			hide_dotfiles = true,
+			hide_gitignored = true,
+			-- THÊM VÀO: Chặn các file rác gây lỗi crash trên Windows
+			hide_by_pattern = {
+				"*.meta",
+				"*/.git/*",
+				".git_*", -- Quan trọng: Chặn file git_hidden_message gây lỗi
+			},
+		},
+		follow_current_file = {
+			enabled = true,
+			leave_dirs_open = false,
+		},
+		-- THAY ĐỔI QUAN TRỌNG: Tắt libuv watcher để tránh lỗi "duplicate node id"
+		use_libuv_file_watcher = false,
+		hijack_netrw_behavior = "open_default",
+	}
+end
+
+-- Cấu hình nguồn git_status
+local function git_status_opts()
+	return {
+		window = {
+			position = "left",
+			mappings = {
+				["A"] = "git_add_all",
+				["gu"] = "git_unstage_file",
+				["ga"] = "git_add_file",
+				["gc"] = "git_commit",
+				["gp"] = "git_push",
+				["gg"] = "git_commit_and_push",
+			},
+		},
+	}
+end
+
 return {
 	"nvim-neo-tree/neo-tree.nvim",
 	branch = "v3.x",
@@ -50,11 +159,7 @@ return {
 		"MunifTanjim/nui.nvim",
 	},
 	config = function()
-		-- Giữ nguyên phần icon đẹp của cậu
-		vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
-		vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
-		vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
-		vim.fn.sign_define("DiagnosticSignHint", { text = "󰌵", texthl = "DiagnosticSignHint" })
+		define_signs()
 
 		require("neo-tree").setup({
 			-- 1. CẤU HÌNH CHUNG
@@ -70,98 +175,13 @@ return {
 			},
 
 			-- 3. CẤU HÌNH CỬA SỔ (WINDOW)
-			window = {
-				position = "left",
-				width = 30,
-				mapping_options = {
-					noremap = true,
-					nowait = true,
-				},
-				mappings = {
-					-- Tớ giữ nguyên toàn bộ phím tắt cậu đã quen dùng
-					["<space>"] = "none", -- Tắt <space> để tránh chờ timeout do trùng tiền tố <leader>
-					["<2-LeftMouse>"] = "open",
-					["<cr>"] = "open",
-					["<esc>"] = "cancel",
-					["<C-f>"] = scroll_page(-10, function(opts) require("neoscroll").ctrl_f(opts) end),
-					["<C-b>"] = scroll_page(10, function(opts) require("neoscroll").ctrl_b(opts) end),
-					["P"] = { "toggle_preview", config = { use_float = true } },
-					["l"] = "open",
-					["S"] = "open_split",
-					["s"] = "open_vsplit",
-					["t"] = "open_tabnew",
-					["C"] = "close_node",
-					["z"] = "close_all_nodes",
-					["a"] = { "add", config = { show_path = "none" } },
-					["d"] = "delete",
-					["r"] = "rename",
-					["y"] = "copy_to_clipboard",
-					["x"] = "cut_to_clipboard",
-					["p"] = "paste_from_clipboard",
-					["c"] = "copy",
-					["m"] = "move",
-					["q"] = "close_window",
-					["R"] = "refresh",
-					["?"] = "show_help",
-					["Z"] = "expand_all_nodes",
-					-- Gắn nhãn flash ở đầu mọi dòng đang hiện để nhảy thẳng tới node
-					["f"] = function()
-						require("flash").jump({
-							pattern = "^",
-							search = { mode = "search", max_length = 0, multi_window = false },
-							label = { after = { 0, 0 } },
-						})
-					end,
-				},
-			},
+			window = window_opts(),
 
 			-- 4. CẤU HÌNH HỆ THỐNG FILE (FILESYSTEM) - PHẦN ĐÃ SỬA CHO WINDOWS
-			filesystem = {
-				window = {
-					mappings = {
-						["H"] = "toggle_hidden",
-					},
-					fuzzy_finder_mappings = {
-						["<down>"] = move_result(1),
-						["<C-n>"] = move_result(1),
-						["<up>"] = move_result(-1),
-						["<C-p>"] = move_result(-1),
-					},
-				},
-				filtered_items = {
-					visible = false, -- Cho phép hiện file ẩn nếu muốn
-					hide_dotfiles = true,
-					hide_gitignored = true,
-					-- THÊM VÀO: Chặn các file rác gây lỗi crash trên Windows
-					hide_by_pattern = {
-						"*.meta",
-						"*/.git/*",
-						".git_*", -- Quan trọng: Chặn file git_hidden_message gây lỗi
-					},
-				},
-				follow_current_file = {
-					enabled = true,
-					leave_dirs_open = false,
-				},
-				-- THAY ĐỔI QUAN TRỌNG: Tắt libuv watcher để tránh lỗi "duplicate node id"
-				use_libuv_file_watcher = false,
-				hijack_netrw_behavior = "open_default",
-			},
+			filesystem = filesystem_opts(),
 
 			-- 5. CẤU HÌNH GIT STATUS (Giữ nguyên)
-			git_status = {
-				window = {
-					position = "left",
-					mappings = {
-						["A"] = "git_add_all",
-						["gu"] = "git_unstage_file",
-						["ga"] = "git_add_file",
-						["gc"] = "git_commit",
-						["gp"] = "git_push",
-						["gg"] = "git_commit_and_push",
-					},
-				},
-			},
+			git_status = git_status_opts(),
 		})
 	end,
 }
