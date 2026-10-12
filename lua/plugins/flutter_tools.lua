@@ -20,12 +20,18 @@ end
 local function build_excluded_folders()
 	-- Thư mục dartls không cần phân tích: giảm mạnh số file phải index khi
 	-- mở project lớn. Go-to-definition vào SDK/package vẫn hoạt động.
-	-- Đường dẫn Flutter SDK suy ra từ lệnh flutter trong PATH, không hardcode.
-	local excluded_folders = { vim.fn.expand("$HOME/.pub-cache") }
-	local flutter_bin = vim.fn.exepath("flutter")
-	if flutter_bin ~= "" then
+	-- Flutter SDK lấy từ .fvm của repo (như plugin), không có thì suy ra từ lệnh flutter trong PATH.
+	local home = vim.fn.expand("$HOME")
+	local excluded_folders = { home .. "/.pub-cache" }
+	local fvm_dir = vim.fs.find(".fvm", { path = vim.fn.getcwd(), upward = true, type = "directory" })[1]
+	local sdk = fvm_dir and vim.uv.fs_realpath(fvm_dir .. "/flutter_sdk")
+	if not sdk and vim.fn.exepath("flutter") ~= "" then
 		-- <sdk>/bin/flutter -> <sdk>
-		excluded_folders[#excluded_folders + 1] = vim.fs.dirname(vim.fs.dirname(flutter_bin))
+		sdk = vim.fs.dirname(vim.fs.dirname(vim.fn.exepath("flutter")))
+	end
+	-- Wrapper trong ~/bin cho ra $HOME, không được loại trừ cả thư mục home khỏi dartls
+	if sdk and sdk ~= home then
+		excluded_folders[#excluded_folders + 1] = sdk
 	end
 	return excluded_folders
 end
@@ -85,6 +91,11 @@ return {
 			local excluded_folders = build_excluded_folders()
 
 			require("flutter-tools").setup({
+				-- Dùng Flutter SDK do fvm ghim trong repo (.fvm/flutter_sdk), không có .fvm thì rơi về PATH
+				fvm = true,
+				-- Không có .fvm: hỏi shim ~/bin/flutter thư mục SDK thật (tránh plugin resolve symlink thành fvm-shim)
+				flutter_lookup_cmd = "flutter --sdk-root",
+
 				-- 1. Giao diện (UI)
 				ui = {
 					border = "rounded", -- Viền bo tròn hiện đại
