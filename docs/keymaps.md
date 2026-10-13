@@ -135,6 +135,28 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 
 Stepping stays inside project code: Flutter SDK and external package libraries are not stepped into (`debugSdkLibraries` / `debugExternalPackageLibraries` are off in the launch configuration). The REPL window follows new output automatically (logpoint messages, `print`) unless you are inside it. A logpoint fires before its line runs, so it can only print variables assigned on earlier lines. While the debugger is stopped the app is frozen, so the status line shows a "paused" indicator until you continue with `kc`. When a session stops at a breakpoint, a notification names the file and line (press `kc` to continue) and nvim jumps to the tab showing that source, so a stopped app is never hidden behind the Flutter log tab. On Android, starting a Flutter session first marks the app as "being debugged" (`adb shell am set-debug-app --persistent <applicationId>`, undo with `adb shell am clear-debug-app`), so Android does not show the "isn't responding" dialog or kill the app while it is paused at a breakpoint. Breakpoints can be set or cleared while the app is running; they take effect the next time that line executes. The UI opens only when a session stops at a breakpoint (a plain `FlutterRun` through DAP does not open it) and closes when the session ends. Go uses `:GoDebug` (go.nvim, `dlv`); Dart/Flutter uses the launch configuration from flutter-tools.
 
+### Notebook (`h`, notebook buffers only)
+
+| Keys | Action |
+|---|---|
+| `hr` | Run the current cell |
+| `ha` | Run all cells |
+| `hk` | Pick Jupyter kernel |
+| `hi` | Interrupt the running cell |
+| `hx` | Restart the kernel |
+
+Open with `:edit notebook.ipynb`. Saved outputs appear on reopening; `:w` saves cells and outputs.
+`i` or `<Enter>` edits a cell; `<Esc>` returns to cell navigation. All optional plugin keymaps are disabled
+except the five mappings above (Normal mode only). Use `:JupynvimClearOutputs` to clear saved outputs.
+Existing window and multicursor mappings remain available.
+
+Install a kernel in the project's environment (`uv pip install ipykernel`); jupynvim detects project `.venv` environments.
+For a shared fallback kernel, run `uv venv ~/.local/share/jupynvim/venv`,
+`uv pip install --python ~/.local/share/jupynvim/venv/bin/python ipykernel`, then
+`~/.local/share/jupynvim/venv/bin/python -m ipykernel install --user --name jupynvim-python --display-name 'Python (jupynvim)'`.
+Use `:JupynvimKernel` to select it when a notebook names an unavailable kernel. Inline images require Kitty or Ghostty with
+`set -g allow-passthrough on` in tmux; static PNG images need no ImageMagick. See `:checkhealth jupynvim` for diagnostics.
+
 ### Misc (`m`)
 | Keys | Action |
 |---|---|

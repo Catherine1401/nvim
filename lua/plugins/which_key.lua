@@ -51,6 +51,7 @@ return {
 					{ "<leader>o", group = "Codex" },
 					{ "<leader>j", group = "Go" },
 					{ "<leader>k", group = "Debug" },
+					{ "<leader>h", group = "Notebook" },
 				},
 			},
 		},
