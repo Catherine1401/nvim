@@ -50,6 +50,33 @@ local function define_signs()
 	vim.fn.sign_define("DiagnosticSignHint", { text = "󰌵", texthl = "DiagnosticSignHint" })
 end
 
+-- Mở tài liệu Office bằng LibreOffice khi người dùng chọn mở file thông thường
+local function open_office(args)
+	local extension = vim.fn.fnamemodify(args.path, ":e"):lower()
+	if (args.open_cmd ~= "e" and args.open_cmd ~= "edit" and args.open_cmd ~= "b")
+		or (extension ~= "docx" and extension ~= "pptx") then
+		return
+	end
+	if vim.fn.executable("libreoffice") ~= 1 then
+		vim.notify("LibreOffice is required to open DOCX/PPTX", vim.log.levels.ERROR)
+		return { handled = true }
+	end
+	local job = vim.fn.jobstart({ "libreoffice", args.path }, {
+		detach = true,
+		on_exit = function(_, code)
+			if code ~= 0 then
+				vim.schedule(function()
+					vim.notify("LibreOffice exited with code " .. code, vim.log.levels.ERROR)
+				end)
+			end
+		end,
+	})
+	if job <= 0 then
+		vim.notify("Could not start LibreOffice", vim.log.levels.ERROR)
+	end
+	return { handled = true }
+end
+
 -- Cấu hình cửa sổ neo-tree cùng toàn bộ phím tắt
 local function window_opts()
 	return {
@@ -162,6 +189,9 @@ return {
 		define_signs()
 
 		require("neo-tree").setup({
+			event_handlers = {
+				{ event = "file_open_requested", handler = open_office },
+			},
 			-- 1. CẤU HÌNH CHUNG
 			close_if_last_window = true,
 			popup_border_style = "rounded",
