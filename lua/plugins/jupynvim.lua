@@ -15,6 +15,10 @@ return {
 		opts.keymaps.pick_kernel = "<leader>hk"
 		opts.keymaps.interrupt_kernel = "<leader>hi"
 		opts.keymaps.restart_kernel = "<leader>hx"
+		opts.keymaps.to_markdown = "<leader>hm"
+		opts.keymaps.to_code = "<leader>hc"
+		opts.keymaps.move_up = "<leader>hu"
+		opts.keymaps.move_down = "<leader>hd"
 		return opts
 	end,
 }

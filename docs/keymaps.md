@@ -144,10 +144,14 @@ Stepping stays inside project code: Flutter SDK and external package libraries a
 | `hk` | Pick Jupyter kernel |
 | `hi` | Interrupt the running cell |
 | `hx` | Restart the kernel |
+| `hm` | Convert the cell to Markdown |
+| `hc` | Convert the cell to code |
+| `hu` | Move the cell up |
+| `hd` | Move the cell down |
 
 Open with `:edit notebook.ipynb`. Saved outputs appear on reopening; `:w` saves cells and outputs.
 `i` or `<Enter>` edits a cell; `<Esc>` returns to cell navigation. All optional plugin keymaps are disabled
-except the five mappings above (Normal mode only). Use `:JupynvimClearOutputs` to clear saved outputs.
+except the nine mappings above (Normal mode only). Use `:JupynvimClearOutputs` to clear saved outputs.
 Existing window and multicursor mappings remain available.
 
 Install a kernel in the project's environment (`uv pip install ipykernel`); jupynvim detects project `.venv` environments.
