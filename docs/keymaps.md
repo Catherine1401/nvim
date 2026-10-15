@@ -173,9 +173,9 @@ Use `:JupynvimKernel` to select it when a notebook names an unavailable kernel. 
 
 | Keys | Action |
 |---|---|
-| `<Enter>` / `l` | Open a file or expand a directory; DOCX/PPTX files open in a separate LibreOffice window |
+| `<Enter>` / `l` | Open a file or expand a directory; DOCX/PPTX/XLSX files open in LibreOffice; PDF files open in the default viewer via `xdg-open` |
 
-LibreOffice must be available in `PATH`. Office files are launched in the background, so Neovim remains usable.
+LibreOffice and `xdg-open` must be available in `PATH`. These files are launched in the background, so Neovim remains usable.
 Other file types and the split/tab mappings keep their existing behavior.
 
 ### Windows
