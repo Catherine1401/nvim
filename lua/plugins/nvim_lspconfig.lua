@@ -46,6 +46,7 @@ local function setup_mason()
 			"pyright",
 			"marksman",
 			"clangd",
+			"nil_ls",
 
 			-- Formatters & Linters
 			"prettier", -- Formatter cho JSON/YAML/Markdown
