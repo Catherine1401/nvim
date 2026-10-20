@@ -57,8 +57,8 @@ end
 
 -- Kích hoạt lệnh Flutter*, nạp module phụ trợ và extension telescope sau setup
 local function after_setup()
-	-- Plugin chỉ đăng ký lệnh Flutter* khi mở file dart/pubspec; cwd là project Flutter thì kích hoạt ngay
-	if vim.uv.fs_stat(vim.fn.getcwd() .. "/pubspec.yaml") then
+	-- Plugin chỉ đăng ký lệnh Flutter* khi mở file dart/pubspec; cwd hoặc buffer hiện tại thuộc project Flutter thì kích hoạt ngay
+	if vim.uv.fs_stat(vim.fn.getcwd() .. "/pubspec.yaml") or vim.fs.root(0, "pubspec.yaml") then
 		vim.api.nvim_exec_autocmds("BufEnter", { group = "FlutterToolsGroup", pattern = "pubspec.yaml" })
 	end
 
