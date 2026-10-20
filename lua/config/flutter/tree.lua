@@ -7,11 +7,11 @@ local BUF_NAME = "__FLUTTER_WIDGET_TREE__"
 local GROUP = "config-flutter-tree"
 local NS = vim.api.nvim_create_namespace("flutter_widget_tree")
 local MIN_WIDTH, MIN_MAX_WIDTH, MAX_WIDTH_RATIO = 36, 42, 0.33
-local SEGMENT_WIDTH, NAME_RESERVE, MIN_LEVELS = 3, 28, 6
+local SEGMENT_WIDTH, NAME_RESERVE, ANCHOR_BELOW = 3, 28, 3
 local PUSH_THROTTLE_MS, SELF_EVENT_NS = 120, 600 * 1000 * 1000
 
 -- Trạng thái duy nhất: cây gốc, các dòng đang hiển thị và tập nút đã thu gọn (theo valueId)
-local S = { root = nil, lines = {}, collapsed = {}, custom = {}, group = GROUP, seq = 0, isolate = nil, sel = nil, pushed_at = 0, last_row = nil, synced = nil, last_run = 0, view = nil, view_offset = 0, zoom_stack = {}, raw = nil, visible = nil }
+local S = { root = nil, lines = {}, collapsed = {}, custom = {}, group = GROUP, seq = 0, isolate = nil, sel = nil, pushed_at = 0, last_row = nil, synced = nil, last_run = 0, view = nil, view_offset = 0, zoom_stack = {}, raw = nil, visible = nil, shift = 0, closed = nil }
 
 -- Nhóm widget theo vai trò; widget không nằm trong bảng nào dùng màu Normal
 local KINDS = {
@@ -87,34 +87,23 @@ end
 
 local function max_width() return math.max(MIN_MAX_WIDTH, math.floor(vim.o.columns * MAX_WIDTH_RATIO)) end
 
--- Tính độ sâu từng dòng và số cấp đầu bị nén (mỗi cấp nén chỉ còn 1 cột thay vì 3) để cây sâu vẫn vừa cửa sổ
--- mà con luôn nằm bên phải cha; luôn giữ nguyên MIN_LEVELS cấp sâu nhất ở đủ 3 cột
-local function plan_levels(lines)
+-- Tính độ sâu từng dòng và số cấp nhánh bị cắt bên trái để dòng ở `row` cùng ANCHOR_BELOW cấp con của nó vừa cửa sổ
+local function plan_levels(lines, row)
   local max_depth = 0
   for _, entry in ipairs(lines) do
     entry.depth = vim.fn.strchars(entry.guide) / SEGMENT_WIDTH
     max_depth = math.max(max_depth, entry.depth)
   end
-  local avail = max_width() - (#tostring(max_depth + S.view_offset) + 3) - NAME_RESERVE
-  local base = math.ceil((SEGMENT_WIDTH * max_depth - avail) / (SEGMENT_WIDTH - 1))
-  return math.max(0, math.min(base, max_depth - MIN_LEVELS)), max_depth
+  local levels = math.floor((max_width() - (#tostring(max_depth + S.view_offset) + 3) - NAME_RESERVE) / SEGMENT_WIDTH)
+  local anchor = lines[row] and lines[row].depth or 0
+  return math.max(0, anchor + ANCHOR_BELOW - levels), max_depth
 end
 
--- Nhánh nén: chỉ giữ ký tự đầu (│ ├ └ hoặc khoảng trắng) của `count` đoạn nhánh đầu, mỗi cấp 1 cột nhưng vẫn nối cha-con
-local function squeeze(guide, count)
-  local parts = {}
-  for i = 0, count - 1 do
-    parts[#parts + 1] = vim.fn.strcharpart(guide, SEGMENT_WIDTH * i, 1)
-  end
-  return table.concat(parts)
-end
-
--- Phần đứng trước tên: khi có cấp bị nén hoặc đang thu phóng thì có cột độ sâu thật ‹N›; cấp nén vẽ nhánh 1 cột mỗi cấp,
--- các cấp còn lại vẽ nhánh đầy đủ
-local function shown_guide(entry, base, width)
-  if base == 0 and S.view_offset == 0 then return entry.guide end
+-- Phần đứng trước tên: khi có cấp bị cắt hoặc đang thu phóng thì có cột độ sâu thật ‹N›, nhánh bỏ `shift` cấp đầu
+local function shown_guide(entry, shift, width)
+  if shift == 0 and S.view_offset == 0 then return entry.guide end
   local gutter = string.format("‹%" .. width .. "d› ", entry.depth + S.view_offset)
-  return gutter .. squeeze(entry.guide, math.min(entry.depth, base)) .. vim.fn.strcharpart(entry.guide, SEGMENT_WIDTH * base)
+  return gutter .. vim.fn.strcharpart(entry.guide, SEGMENT_WIDTH * shift)
 end
 
 -- Loại màu của widget: custom (class trong project) > nhóm vai trò > Normal
@@ -280,9 +269,24 @@ local function get_buf()
   return buf
 end
 
+-- Lưu trạng thái xem lúc cửa sổ cây đóng (thu gọn, thu phóng, nút dưới con trỏ, khoảng cách tới đỉnh, nút đang chọn) để mở lại đúng chỗ
+local function save_state(win)
+  local view = vim.api.nvim_win_call(win, vim.fn.winsaveview)
+  local sel = S.sel and vim.api.nvim_buf_get_extmark_by_id(find_buf(), NS, S.sel, {})[1]
+  local cursor, selected = S.lines[view.lnum], sel and S.lines[sel + 1]
+  S.closed = {
+    isolate = S.isolate, collapsed = S.collapsed, view = S.view, zoom_stack = S.zoom_stack,
+    node = cursor and cursor.node, offset = view.lnum - view.topline, sel = selected and selected.node,
+  }
+end
+
 local function open_win(buf)
   vim.cmd("botright vertical " .. MIN_WIDTH .. "split")
   local win = vim.api.nvim_get_current_win()
+  vim.api.nvim_create_autocmd("WinClosed", {
+    group = vim.api.nvim_create_augroup("flutter_tree_close", {}), pattern = tostring(win), once = true,
+    callback = function() save_state(win) end,
+  })
   vim.api.nvim_win_set_buf(win, buf)
   for opt, value in pairs({
     number = false,
@@ -305,11 +309,13 @@ function M.draw()
   local buf = get_buf()
   S.lines = {}
   flatten(S.view or S.root, "", "", S.lines)
-  local base, max_depth = plan_levels(S.lines)
+  local open = vim.fn.win_findbuf(buf)[1]
+  local shift, max_depth = plan_levels(S.lines, open and vim.api.nvim_win_get_cursor(open)[1] or 1)
+  S.shift = shift
   local width = #tostring(max_depth + S.view_offset)
   local texts = {}
   for _, entry in ipairs(S.lines) do
-    entry.shown = shown_guide(entry, base, width)
+    entry.shown = shown_guide(entry, shift, width)
     texts[#texts + 1] = entry.shown .. entry.node.description
   end
   vim.bo[buf].modifiable = true
@@ -322,6 +328,17 @@ function M.draw()
   local win = vim.fn.win_findbuf(buf)[1] or open_win(buf)
   S.last_row = S.last_row or vim.api.nvim_win_get_cursor(win)[1]
   fit_width(win, texts)
+  vim.api.nvim_win_call(win, function() vim.fn.winrestview({ leftcol = 0 }) end)
+end
+
+-- Con trỏ sang vùng sâu khác thì vẽ lại để nhánh trượt theo, giữ dòng đang chọn trên thiết bị
+local function follow_cursor(win)
+  local buf = find_buf()
+  local shift = plan_levels(S.lines, vim.api.nvim_win_get_cursor(win)[1])
+  if shift == S.shift then return end
+  local sel = S.sel and vim.api.nvim_buf_get_extmark_by_id(buf, NS, S.sel, {})[1]
+  M.draw()
+  if sel then S.sel = vim.api.nvim_buf_set_extmark(buf, NS, sel, 0, { line_hl_group = "FlutterTreeSel", priority = 200 }) end
 end
 
 -- Quét tên class widget của project bằng rg chạy nền (không chặn nvim); lỗi hoặc thiếu rg thì trả tập rỗng
@@ -381,14 +398,6 @@ function M.open(on_done)
   end)
 end
 
--- Cây đang hiển thị thì đóng cửa sổ, chưa hiển thị thì mở
-function M.toggle()
-  local buf = find_buf()
-  local win = buf and vim.fn.win_findbuf(buf)[1]
-  if win then return vim.api.nvim_win_close(win, true) end
-  M.open()
-end
-
 -- Chuyển cây sang isolate giao diện kế tiếp và chuyển chế độ inspector theo; chỉ có một isolate thì báo và giữ nguyên
 function M.switch()
   local session = require("dap").session()
@@ -412,6 +421,56 @@ local function path_to(node, value_id, path)
   end
   path[#path] = nil
   return false
+end
+
+-- Nút cùng valueId trong cây mới và độ sâu thật của nó; valueId giữ nguyên vì cây mới được lấy trước khi giải phóng nhóm cũ
+local function remap(node)
+  local path = {}
+  if node and path_to(S.root, node.valueId, path) then return path[#path], #path - 1 end
+end
+
+-- Dựng lại vùng thu phóng trên cây mới; có nút không còn thì giữ toàn cây
+local function restore_zoom(closed)
+  local stack = {}
+  for _, step in ipairs(closed.zoom_stack) do
+    local node, view, depth = remap(step.node), remap(step.view)
+    if not node or (step.view and not view) then return end
+    stack[#stack + 1] = { view = view, offset = step.view and depth or 0, node = node }
+  end
+  local view, depth = remap(closed.view)
+  if closed.view and not view then return end
+  S.view, S.view_offset, S.zoom_stack = view, closed.view and depth or 0, stack
+end
+
+local function row_of(node)
+  for row, entry in ipairs(S.lines) do
+    if node and entry.node.valueId == node.valueId then return row end
+  end
+end
+
+-- Áp trạng thái lúc đóng lên cây vừa tải; cây của isolate khác (hot restart, đổi isolate) đánh số valueId lại nên bỏ qua
+local function restore_state(closed)
+  if closed.isolate ~= S.isolate then return end
+  S.collapsed = closed.collapsed
+  restore_zoom(closed)
+  M.draw()
+  local buf = find_buf()
+  local win = vim.fn.win_findbuf(buf)[1]
+  local row, sel = row_of(closed.node) or 1, row_of(closed.sel)
+  S.last_row = row
+  vim.api.nvim_win_set_cursor(win, { row, 0 })
+  vim.api.nvim_win_call(win, function() vim.fn.winrestview({ topline = math.max(1, row - closed.offset) }) end)
+  if sel then S.sel = vim.api.nvim_buf_set_extmark(buf, NS, sel - 1, 0, { line_hl_group = "FlutterTreeSel", priority = 200 }) end
+  follow_cursor(win)
+end
+
+-- Cây đang hiển thị thì đóng cửa sổ, chưa hiển thị thì tải lại và mở về đúng trạng thái lúc đóng
+function M.toggle()
+  local buf = find_buf()
+  local win = buf and vim.fn.win_findbuf(buf)[1]
+  if win then return vim.api.nvim_win_close(win, true) end
+  local closed = S.closed
+  M.open(closed and function() restore_state(closed) end)
 end
 
 -- Đường tới nút trong vùng đang thu phóng; nút nằm ngoài vùng đó thì trở về toàn cây (reset=true)
@@ -450,6 +509,7 @@ local function select_node(value_id)
     if entry.node.valueId == value_id then
       S.last_row, S.synced = row, entry.node
       vim.api.nvim_win_set_cursor(win, { row, 0 })
+      follow_cursor(win)
       S.sel = vim.api.nvim_buf_set_extmark(buf, NS, row - 1, 0, { line_hl_group = "FlutterTreeSel", priority = 200 })
       return true
     end
@@ -518,6 +578,7 @@ end
 local push_timer = vim.uv.new_timer()
 local function on_tree_cursor()
   if vim.api.nvim_get_current_buf() ~= find_buf() then return end
+  follow_cursor(0)
   push_timer:stop()
   local now = vim.uv.hrtime()
   if now - S.last_run >= PUSH_THROTTLE_MS * 1000 * 1000 then

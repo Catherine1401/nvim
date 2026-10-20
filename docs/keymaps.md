@@ -108,7 +108,7 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `rl` / `rz` | Toggle / clear log |
 | `ri` | Toggle inspect widget |
 | `rw` | Open DevTools |
-| `rg` | Toggle the widget tree of the running app, listing only widgets created by project code (framework, Flutter SDK and package widgets are hidden; their project children attach to the nearest project ancestor). In the tree: `<CR>` jump to the widget source (focus moves to the code window) and highlight it on the device, `<Tab>` fold, `i` inspect, `z` / `Z` zoom into / out of a subtree, `s` switch UI isolate (when the app has several), `r` refresh, `q` close. Moving the tree cursor only highlights that widget on the device (no code navigation); picking a widget on the device selects it in the tree and shows its source |
+| `rg` | Toggle the widget tree of the running app, listing only widgets created by project code (framework, Flutter SDK and package widgets are hidden; their project children attach to the nearest project ancestor). In the tree: `<CR>` jump to the widget source (focus moves to the code window) and highlight it on the device, `<Tab>` fold, `i` inspect, `z` / `Z` zoom into / out of a subtree, `s` switch UI isolate (when the app has several), `r` refresh, `q` close. Deep branches slide left with the cursor so the current widget always fits; the `‹N›` column shows the real depth. Moving the tree cursor only highlights that widget on the device (no code navigation); picking a widget on the device selects it in the tree and shows its source |
 | `rp` | `pub get` |
 | `rm` | Rename symbol |
 | `rs` | Flutter commands (Telescope) |
