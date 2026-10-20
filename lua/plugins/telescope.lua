@@ -116,6 +116,10 @@ local function extensions_opts()
 		flutter = {
 			-- ...
 		},
+		-- Tự xoá mục file đã mất, không hỏi: hộp hỏi mở picker chồng lên frecency làm prompt bị gõ thêm chữ "A"
+		frecency = {
+			db_safe_mode = false,
+		},
 	}
 end
 
