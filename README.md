@@ -14,7 +14,27 @@
   <a href="docs/install.md#uninstall">Uninstall</a>
 </p>
 
-https://github.com/user-attachments/assets/7858d4d4-a8d7-4542-971f-2da92d7c54ad
+https://github.com/user-attachments/assets/6b67e714-2c31-4b35-b46d-441809a886d0
+
+<details>
+<summary>Chapters</summary>
+
+| Time | Chapter |
+|---|---|
+| 0:00 | Search |
+| 0:18 | Files, buffers and windows |
+| 0:41 | Motion and editing |
+| 1:00 | Multicursor |
+| 1:11 | LSP and diagnostics |
+| 1:39 | Completion and AI |
+| 1:56 | Git |
+| 2:46 | Flutter |
+| 3:40 | Debugging |
+| 4:33 | Go |
+| 4:59 | Notebooks |
+| 5:25 | Terminal and Markdown |
+
+</details>
 
 ## Install
 
