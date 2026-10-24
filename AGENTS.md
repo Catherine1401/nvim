@@ -9,7 +9,7 @@ Change checklist (files that change together, in one commit):
 - New plugin: one file `lua/plugins/<repo name in snake_case>.lua`, indented with tabs.
 - New or changed key: update `docs/keymaps.md` (English, tracked). A new leader group also needs `{ "<leader>x", group = "..." }` in `lua/plugins/which_key.lua`.
 - Removed plugin: delete its file, and remove its group from `which_key.lua` and its section from `docs/keymaps.md`. Do not commit `lazy-lock.json` (gitignored).
-- New module in `lua/config/`: `local M = {}` with `M.setup()`, called from the plugin's `config`/`init`. List it in the Structure block of `README.md`.
+- New module in `lua/config/`: `local M = {}` with `M.setup()`, called from the plugin's `config`/`init`. List it in the Structure block of `docs/structure.md`.
 - Changed tool requirement: keep `lua/config/health.lua` and `install.sh` in sync (`MIN_TREE_SITTER` is defined in both).
 
 Conventions:

@@ -1,12 +1,24 @@
-<div align="center">
+<p align="center">
+  <img src="./assets/logo.svg" width="160" alt="HW NVIM logo" />
+</p>
 
-<img src="./assets/logo.svg" alt="HW NVIM" width="620">
+<h1 align="center">HW NVIM</h1>
 
-</div>
+<p align="center">
+  <em>A personal Neovim config for Flutter, Go and Lua — installed with one command.</em>
+</p>
 
-Personal Neovim configuration in Lua, managed with [lazy.nvim](https://github.com/folke/lazy.nvim).
+<p align="center">
+  <a href="docs/install.md">Install</a> ·
+  <a href="docs/keymaps.md">Keymaps</a> ·
+  <a href="docs/install.md#health-check">Health check</a> ·
+  <a href="docs/structure.md">Structure</a> ·
+  <a href="docs/install.md#uninstall">Uninstall</a>
+</p>
 
-> Personal config, not a distribution. Expect it to change without notice.
+<p align="center">
+  <a href="docs/assets/demo.mp4"><img src="docs/assets/demo.gif" width="720" alt="HW NVIM demo" /></a>
+</p>
 
 ## Install
 
@@ -14,29 +26,17 @@ Personal Neovim configuration in Lua, managed with [lazy.nvim](https://github.co
 curl -fsSL https://raw.githubusercontent.com/Catherine1401/nvim/main/install.sh | bash
 ```
 
-Works on Linux (x86_64, arm64) and macOS, needs no `sudo`, and installs into your home directory:
+Linux and macOS, no `sudo`. Details in [docs/install.md](docs/install.md).
 
-- checks `git`, `curl`, `tar`, `make` and a C compiler; prints the install command if one is missing
-- installs Neovim >= 0.12 and the tree-sitter CLI into `~/.local` when they are missing or too old
-- clones this repo to `~/.config/nvim` (an existing config is moved to `nvim.bak-<time>`) and installs the plugins
+## Features
 
-Run the same command again to update. A [Nerd Font](https://www.nerdfonts.com/) is recommended for icons.
+- Flutter and Go: run, hot reload, widget tree, debugging with nvim-dap
+- Git: gitsigns hunks, diffview with LSP in diff buffers, Neogit commits
+- Telescope search with frecency, Neo-tree, Trouble diagnostics
+- AI: Claude Code, Codex and Codeium inline suggestions
+- `:checkhealth config` reports missing tools
+- Press `<Space>` for which-key; full list in [docs/keymaps.md](docs/keymaps.md)
 
-## Check
+> Personal config, not a distribution. Expect it to change without notice.
 
-`:checkhealth config` lists what is missing: required tools, recommended ones (ripgrep, fd, Node.js, Python 3, cargo) and per-feature ones (Go, Flutter, ...).
-
-## Structure
-
-```
-init.lua          # entry point
-install.sh        # installer
-lua/config/       # options, keymaps, autocmds, lazy.nvim bootstrap, health check, feature modules (diff_*, flutter/)
-lua/plugins/      # one file per plugin, auto-imported by lazy.nvim
-```
-
-Press `<Space>` (the leader) to browse keymaps with which-key; the full list is in [docs/keymaps.md](docs/keymaps.md).
-
-## License
-
-[MIT](LICENSE)
+MIT © 2026 huyvv · [License](LICENSE)
