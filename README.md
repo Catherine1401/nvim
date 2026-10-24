@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo.svg" width="160" alt="HW NVIM logo" />
+  <img src="./assets/logo.svg" width="128" alt="HW NVIM logo" />
 </p>
 
 <h1 align="center">HW NVIM</h1>
