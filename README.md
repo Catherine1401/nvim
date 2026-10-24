@@ -2,8 +2,6 @@
   <img src="./assets/logo.svg" width="128" alt="HW NVIM logo" />
 </p>
 
-<h1 align="center">HW NVIM</h1>
-
 <p align="center">
   <em>A personal Neovim config for Flutter, Go and Lua — installed with one command.</em>
 </p>
@@ -16,9 +14,7 @@
   <a href="docs/install.md#uninstall">Uninstall</a>
 </p>
 
-<p align="center">
-  <a href="docs/assets/demo.mp4"><img src="docs/assets/demo.gif" width="720" alt="HW NVIM demo" /></a>
-</p>
+https://github.com/user-attachments/assets/7858d4d4-a8d7-4542-971f-2da92d7c54ad
 
 ## Install
 
