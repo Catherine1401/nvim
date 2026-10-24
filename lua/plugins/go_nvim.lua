@@ -14,6 +14,8 @@ return {
 			dap_debug_gui = false,
 			dap_debug_keymap = false,
 			dap_debug_vt = false,
+			-- Tắt inlay hint (kiểu biến, tên tham số như int, w:, a...:) mà go.nvim bật mặc định
+			lsp_inlay_hints = { enable = false },
 		})
 		vim.api.nvim_create_autocmd("BufWritePre", {
 			group = vim.api.nvim_create_augroup("GoFormat", {}),
