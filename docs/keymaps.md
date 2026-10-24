@@ -58,6 +58,7 @@ To search only some folders of a project, put a whitelist `.ignore` file at its 
 | `dd` | Workspace diagnostics (Trouble) |
 | `db` | Buffer diagnostics (Trouble) |
 | `dt` | Toggle diagnostic virtual text |
+| `dh` | Toggle LSP inlay hints (off by default) |
 
 ### Git (`g`)
 | Keys | Action |

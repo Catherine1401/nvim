@@ -156,6 +156,15 @@ local function setup_diagnostics()
 	end
 
 	vim.keymap.set("n", "<leader>dt", toggle_visual_diagnostics, { desc = "Toggle Diagnostics Text" })
+
+	-- Hàm bật/tắt inlay hint (kiểu biến, tên tham số) trên toàn bộ buffer
+	local function toggle_inlay_hints()
+		local enabled = not vim.lsp.inlay_hint.is_enabled()
+		vim.lsp.inlay_hint.enable(enabled)
+		vim.notify("Inlay Hints: " .. (enabled and "ON" or "OFF"), enabled and "info" or "warn")
+	end
+
+	vim.keymap.set("n", "<leader>dh", toggle_inlay_hints, { desc = "Toggle Inlay Hints" })
 end
 
 -- Đăng ký phím tắt LSP khi server attach
